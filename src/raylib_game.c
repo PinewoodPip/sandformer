@@ -72,8 +72,9 @@ int main(void)
     PlayMusicStream(music);
 
     // Setup and init first screen
-    currentScreen = LOGO;
-    InitLogoScreen();
+    currentScreen = GAMEPLAY;
+    //InitLogoScreen();
+    InitGameplayScreen();
 
 #if defined(PLATFORM_WEB)
     emscripten_set_main_loop(UpdateDrawFrame, 60, 1);
@@ -160,7 +161,7 @@ static void UpdateTransition(void)
 {
     if (!transFadeOut)
     {
-        transAlpha += 0.05f;
+        transAlpha += 0.2f;
 
         // NOTE: Due to float internal representation, condition jumps on 1.0f instead of 1.05f
         // For that reason we compare against 1.01f, to avoid last frame loading stop

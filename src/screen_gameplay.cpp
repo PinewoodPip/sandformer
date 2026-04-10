@@ -29,6 +29,7 @@
 #include "ecs/PlayerSystem.hpp"
 #include "ecs/PhysicsSystem.hpp"
 #include "ecs/CurrencySystem.hpp"
+#include "ecs/RenderSystem.hpp"
 
 using namespace ecs;
 
