@@ -29,6 +29,7 @@ namespace ecs {
         static constexpr ComponentType Type = ComponentType::Transform;
 
         Vector2 position = { 0.0f, 0.0f };
+        Vector2 velocity = { 0.0f, 0.0f };
     };
 
     struct BoundingBoxComponent
@@ -52,9 +53,11 @@ namespace ecs {
         static constexpr ComponentType Type = ComponentType::Player;
     };
 
-    struct GravityComponent
+    struct PhysicsComponent
     {
         static constexpr ComponentType Type = ComponentType::Gravity;
+
+        bool isGrounded;
     };
 
     struct CurrencyComponent
@@ -68,7 +71,7 @@ namespace ecs {
     struct InventoryComponent
     {
         static constexpr ComponentType Type = ComponentType::Inventory;
-        
+
         std::map<CurrencyType, int> currencies;
     };
 
@@ -77,7 +80,7 @@ namespace ecs {
         BoundingBoxComponent,
         TextureComponent,
         PlayerComponent,
-        GravityComponent,
+        PhysicsComponent,
         CurrencyComponent,
         InventoryComponent
     >;

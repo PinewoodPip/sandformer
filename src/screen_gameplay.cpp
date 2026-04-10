@@ -66,7 +66,7 @@ void InitGameplayScreen(void)
         Vector2{0, 0},
         });
 	world->AddComponent(player, ecs::PlayerComponent{});
-    world->AddComponent(player, ecs::GravityComponent{});
+    world->AddComponent(player, ecs::PhysicsComponent{});
     //LoadTexture("resources/mecha.png"); // TODO!
     world->AddComponent(player, ecs::TextureComponent{ "resources/placeholder.png" });
     world->AddComponent(player, ecs::InventoryComponent{});

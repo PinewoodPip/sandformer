@@ -1,13 +1,13 @@
 #pragma once
 #include "raylib.h"
 #include "Entity.hpp"
-#include <algorithm>
 
 namespace ecs
 {
     class PhysicsSystem : public System
     {
-        static constexpr float GRAVITY = 0.5f;
+        static constexpr float GRAVITY = 3.0f; // Downwards velocity applied per-tick
+        static constexpr float MAX_FALL_SPEED = 70.0f;
 
     public:
         PhysicsSystem(World* world) : System(world) {}
@@ -24,8 +24,8 @@ namespace ecs
 
             for (Entity* entity : world->GetEntities())
             {
-                GravityComponent* gravity = entity->GetComponent<GravityComponent>();
-                if (!gravity)
+                PhysicsComponent* physics = entity->GetComponent<PhysicsComponent>();
+                if (!physics)
                     continue;
 
                 BoundingBoxComponent* boundingBox = entity->GetComponent<BoundingBoxComponent>();
@@ -34,9 +34,22 @@ namespace ecs
                     continue;
 
                 // Apply gravity
-                transform->position.y += GRAVITY;
+                transform->velocity.y += GRAVITY;
+                if (transform->velocity.y > MAX_FALL_SPEED)
+                {
+                    transform->velocity.y = MAX_FALL_SPEED;
+                }
 
-                // Check for collisions and push away from collidables
+                // Record position before moving we know the side we collide from
+                Vector2 prevPosition = transform->position;
+
+                // Apply velocity
+                transform->position.x += transform->velocity.x;
+                transform->position.y += transform->velocity.y;
+
+                physics->isGrounded = false; // Will be re-set after checking collision
+
+                // Check for collisions and push away
                 for (Entity* otherEntity : collidableEntities)
                 {
                     if (otherEntity == entity)
@@ -58,28 +71,35 @@ namespace ecs
                     float bTop = otherTransform->position.y + otherBox->offset.y;
                     float bBottom = bTop + otherBox->size.y;
 
-                    // Continue if there's no overlap
+                    // Skip if there's no overlap
                     if (aLeft >= bRight || aRight <= bLeft || aTop >= bBottom || aBottom <= bTop)
                         continue;
 
-                    // Get penetration depth to determine axis with least collision
-                    float overlapX = std::min(aRight - bLeft, bRight - aLeft);
-                    float overlapY = std::min(aBottom - bTop, bBottom - aTop);
+                    // Use the pre-move position to determine which side to push to
+                    // This also prevents overshooting collisions.
+                    float prevBottom = prevPosition.y + boundingBox->offset.y + boundingBox->size.y;
+                    float prevTop = prevPosition.y + boundingBox->offset.y;
+                    float prevRight = prevPosition.x + boundingBox->offset.x + boundingBox->size.x;
+                    float prevLeft = prevPosition.x + boundingBox->offset.x;
 
-                    // Push away from the axis
-                    if (overlapX < overlapY)
+                    if (prevBottom <= bTop)
                     {
-                        if (aLeft < bLeft)
-                            transform->position.x -= overlapX;
-                        else
-                            transform->position.x += overlapX;
+                        transform->position.y = bTop - boundingBox->offset.y - boundingBox->size.y;
+                        transform->velocity.y = 0.0f;
+                        physics->isGrounded = true;
                     }
-                    else
+                    else if (prevTop >= bBottom)
                     {
-                        if (aTop < bTop)
-                            transform->position.y -= overlapY;
-                        else
-                            transform->position.y += overlapY;
+                        transform->position.y = bBottom - boundingBox->offset.y;
+                        transform->velocity.y = 0.0f;
+                    }
+                    else if (prevRight <= bLeft)
+                    {
+                        transform->position.x = bLeft - boundingBox->offset.x - boundingBox->size.x;
+                    }
+                    else if (prevLeft >= bRight)
+                    {
+                        transform->position.x = bRight - boundingBox->offset.x;
                     }
 
                     // Throw event
