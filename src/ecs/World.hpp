@@ -23,28 +23,29 @@ namespace ecs {
     public:
         Entity* CreateEntity();
 
-        // TODO iterator
-        std::vector<Entity*> GetEntities()
-        {
-            return entities;
-        }
+        void Start();
+        void Update();
+        void Render();
+        void AddComponent(Entity* entity, AnyComponent component);
 
         void AddSystem(System* system)
         {
             systems.push_back(system);
         }
 
-        void Start();
-        void Update();
-        void Render();
-        void ProcessEvents();
-
         void EmitEvent(AnyEvent event)
         {
             events.push(event);
         }
 
-        void AddComponent(Entity* entity, Component* component);
+        // TODO iterator
+        std::vector<Entity*> GetEntities()
+        {
+            return entities;
+        }
+
+    private:
+        void ProcessEvents();
     };
 
     class System

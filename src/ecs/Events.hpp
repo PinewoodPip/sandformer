@@ -15,7 +15,6 @@ namespace ecs {
     struct ComponentAddedEvent
     {
         Entity* entity;
-        Component* component;
     };
 
     struct CollisionEvent

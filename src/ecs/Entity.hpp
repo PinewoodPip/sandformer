@@ -10,23 +10,25 @@ namespace ecs {
     class Entity
     {
     public:
-        int ID;
-        std::map<ComponentType, Component*> components;
+        const int ID = 0;
+
+		Entity(int id) : ID(id) {}
 
         template <typename T>
         T* GetComponent()
         {
-            ComponentType componentType = T::Type;
-            auto component = components.find(componentType);
-            if (component != components.end())
+            auto it = components.find(T::Type);
+            if (it != components.end())
             {
-                return static_cast<T*>(component->second);
+                return std::get_if<T>(&it->second);
             }
-            else
-            {
-                return nullptr;
-            }
+            return nullptr;
         }
+
+	private:
+        std::map<ComponentType, AnyComponent> components;
+
+		friend class World;
     };
 
 }

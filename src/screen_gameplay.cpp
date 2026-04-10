@@ -60,16 +60,16 @@ void InitGameplayScreen(void)
 
     // Create player
     Entity* player = world->CreateEntity();
-    world->AddComponent(player, new ecs::TransformComponent());
-    world->AddComponent(player, new ecs::BoundingBoxComponent{
+    world->AddComponent(player, ecs::TransformComponent{});
+    world->AddComponent(player, ecs::BoundingBoxComponent{
         Vector2{1, 1},
         Vector2{0, 0},
         });
-	world->AddComponent(player, new ecs::PlayerComponent());
-    world->AddComponent(player, new ecs::GravityComponent());
+	world->AddComponent(player, ecs::PlayerComponent{});
+    world->AddComponent(player, ecs::GravityComponent{});
     //LoadTexture("resources/mecha.png"); // TODO!
-    world->AddComponent(player, new ecs::TextureComponent("resources/placeholder.png"));
-    world->AddComponent(player, new ecs::InventoryComponent());
+    world->AddComponent(player, ecs::TextureComponent{ "resources/placeholder.png" });
+    world->AddComponent(player, ecs::InventoryComponent{});
 
     // Create systems
     RenderSystem* renderSystem = new RenderSystem(world);
@@ -85,25 +85,25 @@ void InitGameplayScreen(void)
     for (int i = 0; i < 10; i++)
     {
         Entity* ground = world->CreateEntity();
-        world->AddComponent(ground, new ecs::TransformComponent{ Vector2{ i * (float)BLOCK_SIZE, 300.0f } });
-        world->AddComponent(ground, new ecs::BoundingBoxComponent{
+        world->AddComponent(ground, ecs::TransformComponent{ Vector2{ i * (float)BLOCK_SIZE, 300.0f } });
+        world->AddComponent(ground, ecs::BoundingBoxComponent{
             Vector2{BLOCK_SIZE, BLOCK_SIZE},
             Vector2{0, 0},
             });
-		world->AddComponent(ground, new ecs::TextureComponent("resources/grass.png", Vector2{ BLOCK_SIZE, BLOCK_SIZE }));
+		world->AddComponent(ground, ecs::TextureComponent{ "resources/grass.png", Vector2{ BLOCK_SIZE, BLOCK_SIZE } });
     }
 
     // Create coins
     for (int i = 0; i < 6; i++)
     {
         Entity* coin = world->CreateEntity();
-        world->AddComponent(coin, new ecs::TransformComponent{ Vector2{ 50 + i * (float)BLOCK_SIZE, 100.0f } });
-        world->AddComponent(coin, new ecs::BoundingBoxComponent{
+        world->AddComponent(coin, ecs::TransformComponent{ Vector2{ 50 + i * (float)BLOCK_SIZE, 100.0f } });
+        world->AddComponent(coin, ecs::BoundingBoxComponent{
             Vector2{COIN_SIZE, COIN_SIZE},
             Vector2{0, 0},
             });
-		world->AddComponent(coin, new ecs::CurrencyComponent(CurrencyType::Coin, 1));
-		world->AddComponent(coin, new ecs::TextureComponent("resources/coin.png", Vector2{ COIN_SIZE, COIN_SIZE }));
+		world->AddComponent(coin, ecs::CurrencyComponent{ CurrencyType::Coin, 1 });
+		world->AddComponent(coin, ecs::TextureComponent{ "resources/coin.png", Vector2{ COIN_SIZE, COIN_SIZE } });
     }
 }
 

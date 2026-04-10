@@ -3,6 +3,7 @@
 #include "raylib.h"
 #include <map>
 #include <string>
+#include <variant>
 
 namespace ecs {
 
@@ -23,83 +24,61 @@ namespace ecs {
         Coin,
     };
 
-    class Component // TODO make structs
+    struct TransformComponent
     {
-    public:
-        static constexpr ComponentType Type = ComponentType::None;
-        virtual ComponentType GetType() const { return Type; }
-    };
-
-    class TransformComponent : public Component
-    {
-    public:
         static constexpr ComponentType Type = ComponentType::Transform;
-        ComponentType GetType() const override { return Type; }
 
-        Vector2 position;
-
-        TransformComponent() : position({ 0, 0 }) {}
-        TransformComponent(Vector2 position) : position(position) {}
+        Vector2 position = { 0.0f, 0.0f };
     };
 
-    class BoundingBoxComponent : public Component
+    struct BoundingBoxComponent
     {
-    public:
         static constexpr ComponentType Type = ComponentType::BoundingBox;
-        ComponentType GetType() const override { return Type; }
 
-        Vector2 size;
-        Vector2 offset; // Offset from Transform position.
-
-        BoundingBoxComponent(Vector2 size, Vector2 offset) : size(size), offset(offset) {}
+        Vector2 size = { 0.0f, 0.0f };
+        Vector2 offset = { 0.0f, 0.0f };
     };
 
-    class TextureComponent : public Component
+    struct TextureComponent
     {
-    public:
         static constexpr ComponentType Type = ComponentType::Texture;
-        ComponentType GetType() const override { return Type; }
 
         std::string path;
-        Vector2 size = { 32, 32 };
-
-        TextureComponent(std::string path) : path(path) {}
-        TextureComponent(std::string path, Vector2 size) : path(path), size(size) {}
+        Vector2 size = { 32.0f, 32.0f };
     };
 
-    class PlayerComponent : public Component
+    struct PlayerComponent
     {
-    public:
         static constexpr ComponentType Type = ComponentType::Player;
-        ComponentType GetType() const override { return Type; }
     };
 
-    class GravityComponent : public Component
+    struct GravityComponent
     {
-    public:
         static constexpr ComponentType Type = ComponentType::Gravity;
-        ComponentType GetType() const override { return Type; }
     };
 
-    class CurrencyComponent : public Component
+    struct CurrencyComponent
     {
-    public:
         static constexpr ComponentType Type = ComponentType::Currency;
-        ComponentType GetType() const override { return Type; }
 
-        CurrencyType currencyType;
-        int amount;
-
-        CurrencyComponent(CurrencyType currencyType, int amount = 1) : currencyType(currencyType), amount(amount) {}
+        CurrencyType currencyType = CurrencyType::Coin;
+        int amount = 1;
     };
 
-    class InventoryComponent : public Component
+    struct InventoryComponent
     {
-    public:
         static constexpr ComponentType Type = ComponentType::Inventory;
-        ComponentType GetType() const override { return Type; }
-
+        
         std::map<CurrencyType, int> currencies;
     };
 
+    using AnyComponent = std::variant<
+        TransformComponent,
+        BoundingBoxComponent,
+        TextureComponent,
+        PlayerComponent,
+        GravityComponent,
+        CurrencyComponent,
+        InventoryComponent
+    >;
 }

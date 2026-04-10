@@ -7,8 +7,7 @@ namespace ecs {
 
     Entity* World::CreateEntity()
     {
-        Entity* entity = new Entity();
-        entity->ID = _NextEntityID++;
+        Entity* entity = new Entity(_NextEntityID++);
         entities.push_back(entity);
 
         EmitEvent(EntityCreatedEvent{ entity });
@@ -16,12 +15,12 @@ namespace ecs {
         return entity;
     }
 
-    void World::AddComponent(Entity* entity, Component* component)
+    void World::AddComponent(Entity* entity, AnyComponent component)
     {
-        ComponentType componentType = component->GetType();
-        entity->components.insert({ componentType, component });
+        ComponentType type = std::visit([](const auto& c) -> ComponentType { return c.Type; }, component);
+        entity->components.insert({ type, std::move(component) });
 
-        EmitEvent(ComponentAddedEvent{ entity, component });
+        EmitEvent(ComponentAddedEvent{ entity });
     }
 
     void World::Start()
@@ -65,11 +64,6 @@ namespace ecs {
             // Handle entity destruction requests
             if (auto destroyEntityEvent = std::get_if<RequestDestroyEntityEvent>(&event))
             {
-                // Destroy entity & its components
-                for (auto& [_, component] : destroyEntityEvent->entity->components)
-                {
-                    delete component;
-                }
                 delete destroyEntityEvent->entity;
 
                 // Remove from bookkeeping
