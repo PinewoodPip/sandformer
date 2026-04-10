@@ -14,25 +14,8 @@ namespace ecs
 
         void Update() override
         {
-            std::vector<Entity*> collidableEntities; // TODO optimize by caching entities with gravity and bounding boxes
-
-            for (Entity* entity : world->GetEntities())
+            for (auto [entity, physics, boundingBox, transform] : world->GetEntities<PhysicsComponent, BoundingBoxComponent, TransformComponent>())
             {
-                if (entity->GetComponent<BoundingBoxComponent>())
-                    collidableEntities.push_back(entity);
-            }
-
-            for (Entity* entity : world->GetEntities())
-            {
-                PhysicsComponent* physics = entity->GetComponent<PhysicsComponent>();
-                if (!physics)
-                    continue;
-
-                BoundingBoxComponent* boundingBox = entity->GetComponent<BoundingBoxComponent>();
-                TransformComponent* transform = entity->GetComponent<TransformComponent>();
-                if (!boundingBox || !transform)
-                    continue;
-
                 // Apply gravity
                 transform->velocity.y += GRAVITY;
                 if (transform->velocity.y > MAX_FALL_SPEED)
@@ -40,7 +23,7 @@ namespace ecs
                     transform->velocity.y = MAX_FALL_SPEED;
                 }
 
-                // Record position before moving we know the side we collide from
+                // Record position before moving so we know the side we collide from
                 Vector2 prevPosition = transform->position;
 
                 // Apply velocity
@@ -50,14 +33,9 @@ namespace ecs
                 physics->isGrounded = false; // Will be re-set after checking collision
 
                 // Check for collisions and push away
-                for (Entity* otherEntity : collidableEntities)
+                for (auto [otherEntity, otherBox, otherTransform] : world->GetEntities<BoundingBoxComponent, TransformComponent>())
                 {
-                    if (otherEntity == entity)
-                        continue;
-
-                    BoundingBoxComponent* otherBox = otherEntity->GetComponent<BoundingBoxComponent>();
-                    TransformComponent* otherTransform = otherEntity->GetComponent<TransformComponent>();
-                    if (!otherBox || !otherTransform)
+                    if (otherBox == boundingBox)
                         continue;
 
                     // Get world-space AABBs
@@ -102,7 +80,6 @@ namespace ecs
                         transform->position.x = bRight - boundingBox->offset.x;
                     }
 
-                    // Throw event
                     world->EmitEvent(CollisionEvent{ entity, otherEntity });
                 }
             }

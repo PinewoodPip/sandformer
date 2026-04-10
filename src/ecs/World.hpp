@@ -7,6 +7,7 @@
 #include <set>
 #include <map>
 #include <tuple>
+#include <optional>
 
 namespace ecs {
 
@@ -105,10 +106,11 @@ namespace ecs {
             return EntityView<Ts...>{ view->second };
         }
 
-        // TODO iterator
-        std::vector<Entity*> GetAllEntities()
+        template <typename... Ts>
+        inline std::optional<std::tuple<Ts*...>> GetEntityView(Entity* entity)
         {
-            return entities;
+            bool isValid = ((... && entity->GetComponent<Ts>()));
+            return isValid ? std::make_optional(std::make_tuple(entity->GetComponent<Ts>()...)) : std::nullopt;
         }
 
     private:

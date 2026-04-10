@@ -39,17 +39,12 @@ namespace ecs
 
     void RenderSystem::Render()
     {
+        // Draw entities with textures
         // Note: BeginDrawing() and EndDrawing() is handled by the main loop
-        for (Entity* entity : world->GetAllEntities())
+        for (const auto& [entity, transform, textureComp] : world->GetEntities<TransformComponent, TextureComponent>())
         {
-            // Draw entities with textures
-            auto textureComp = entity->GetComponent<TextureComponent>();
-            auto transform = entity->GetComponent<TransformComponent>();
-            if (textureComp && transform)
-            {
-                Texture2D texture = TryGetTexture2D(textureComp->path);
-                DrawTexture(texture, transform->position.x, transform->position.y, WHITE); // TODO use scale from the component
-            }
+            Texture2D texture = TryGetTexture2D(textureComp->path);
+            DrawTexture(texture, transform->position.x, transform->position.y, WHITE); // TODO use scale from the component
         }
     }
 }

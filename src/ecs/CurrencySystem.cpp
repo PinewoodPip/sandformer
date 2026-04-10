@@ -8,17 +8,23 @@ namespace ecs
         {
             auto* entityA = e->entity;
             auto* entityB = e->otherEntity;
-            InventoryComponent* inventory = entityA->GetComponent<InventoryComponent>();
-            if (!inventory)
+            auto viewA = world->GetEntityView<InventoryComponent>(entityA);
+            if (!viewA.has_value())
             {
                 // Swap entities so that A is the one with the inventory
+                // Having a collision between 2 currency entities makes one take priority, yep - TODO?
                 std::swap(entityA, entityB);
-                inventory = entityA->GetComponent<InventoryComponent>();
+                viewA = world->GetEntityView<InventoryComponent>(entityA);
             }
-            auto* currency = entityB->GetComponent<CurrencyComponent>();
-            if (inventory && currency)
+
+            if (viewA.has_value())
             {
-                PickUpCurrency(inventory, entityB, currency);
+                auto [inventory] = viewA.value();
+                auto* currency = entityB->GetComponent<CurrencyComponent>();
+                if (currency)
+                {
+                    PickUpCurrency(inventory, entityB, currency);
+                }
             }
         }
     }

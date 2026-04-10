@@ -14,26 +14,19 @@ namespace ecs
 
 		void Update() override
 		{
-			for (Entity* entity : world->GetEntities()) // TODO add a filtered GetEntities() call
+			for (auto [_, player, transform, physics] : world->GetEntities<PlayerComponent, TransformComponent, PhysicsComponent>())
 			{
-				PlayerComponent* player = entity->GetComponent<PlayerComponent>();
-				if (player)
-				{
-					TransformComponent* transform = entity->GetComponent<TransformComponent>();
-					PhysicsComponent* physics = entity->GetComponent<PhysicsComponent>();
+				Vector2 movement{ 0.f, 0.f }; // TODO also support arrow keys
+				if (IsKeyDown(KEY_W) && physics->isGrounded)
+					movement.y = -JUMP_VELOCITY;
+				if (IsKeyDown(KEY_A))
+					movement.x -= PLAYER_SPEED;
+				else if (IsKeyDown(KEY_D))
+					movement.x += PLAYER_SPEED;
 
-					Vector2 movement{ 0.f, 0.f }; // TODO also support arrow keys
-					if (IsKeyDown(KEY_W) && physics->isGrounded)
-						movement.y = -JUMP_VELOCITY;
-					if (IsKeyDown(KEY_A))
-						movement.x -= PLAYER_SPEED;
-					else if (IsKeyDown(KEY_D))
-						movement.x += PLAYER_SPEED;
-
-					// TODO use acceleration instead
-					transform->velocity.x = movement.x;
-					transform->velocity.y = movement.y;
-				}
+				// TODO use acceleration instead
+				transform->velocity.x = movement.x;
+				transform->velocity.y = movement.y;
 			}
 		}
 	};
