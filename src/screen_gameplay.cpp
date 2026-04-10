@@ -24,13 +24,25 @@
 **********************************************************************************************/
 
 #include "raylib.h"
-#include "screens.h"
+#include "screens.hpp"
+#include "ecs/Entity.hpp"
+#include "ecs/PlayerSystem.hpp"
+#include "ecs/PhysicsSystem.hpp"
+#include "ecs/CurrencySystem.hpp"
+
+using namespace ecs;
+
+const int BLOCK_SIZE = 64;
+const int COIN_SIZE = 32;
 
 //----------------------------------------------------------------------------------
 // Module Variables Definition (local)
 //----------------------------------------------------------------------------------
 static int framesCounter = 0;
 static int finishScreen = 0;
+
+
+static ecs::World* world = nullptr;
 
 //----------------------------------------------------------------------------------
 // Gameplay Screen Functions Definition
@@ -42,6 +54,56 @@ void InitGameplayScreen(void)
     // TODO: Initialize GAMEPLAY screen variables here!
     framesCounter = 0;
     finishScreen = 0;
+
+    world = new World();
+
+    // Create player
+    Entity* player = world->CreateEntity();
+    world->AddComponent(player, new ecs::TransformComponent());
+    world->AddComponent(player, new ecs::BoundingBoxComponent{
+        Vector2{1, 1},
+        Vector2{0, 0},
+        });
+	world->AddComponent(player, new ecs::PlayerComponent());
+    world->AddComponent(player, new ecs::GravityComponent());
+    //LoadTexture("resources/mecha.png"); // TODO!
+    world->AddComponent(player, new ecs::TextureComponent("resources/placeholder.png"));
+    world->AddComponent(player, new ecs::InventoryComponent());
+
+    // Create systems
+    RenderSystem* renderSystem = new RenderSystem(world);
+    world->AddSystem(renderSystem);
+	PlayerSystem* playerSystem = new PlayerSystem(world);
+	world->AddSystem(playerSystem);
+    PhysicsSystem* physicsSystem = new PhysicsSystem(world);
+    world->AddSystem(physicsSystem);
+    CurrencySystem* currencySystem = new CurrencySystem(world);
+    world->AddSystem(currencySystem);
+
+    // Create ground
+    for (int i = 0; i < 10; i++)
+    {
+        Entity* ground = world->CreateEntity();
+        world->AddComponent(ground, new ecs::TransformComponent{ Vector2{ i * (float)BLOCK_SIZE, 300.0f } });
+        world->AddComponent(ground, new ecs::BoundingBoxComponent{
+            Vector2{BLOCK_SIZE, BLOCK_SIZE},
+            Vector2{0, 0},
+            });
+		world->AddComponent(ground, new ecs::TextureComponent("resources/grass.png", Vector2{ BLOCK_SIZE, BLOCK_SIZE }));
+    }
+
+    // Create coins
+    for (int i = 0; i < 6; i++)
+    {
+        Entity* coin = world->CreateEntity();
+        world->AddComponent(coin, new ecs::TransformComponent{ Vector2{ 50 + i * (float)BLOCK_SIZE, 100.0f } });
+        world->AddComponent(coin, new ecs::BoundingBoxComponent{
+            Vector2{COIN_SIZE, COIN_SIZE},
+            Vector2{0, 0},
+            });
+		world->AddComponent(coin, new ecs::CurrencyComponent(CurrencyType::Coin, 1));
+		world->AddComponent(coin, new ecs::TextureComponent("resources/coin.png", Vector2{ COIN_SIZE, COIN_SIZE }));
+    }
 }
 
 // Gameplay Screen Update logic
@@ -53,8 +115,10 @@ void UpdateGameplayScreen(void)
     if (IsKeyPressed(KEY_ENTER) || IsGestureDetected(GESTURE_TAP))
     {
         finishScreen = 1;
-        PlaySound(fxCoin);
+        //PlaySound(fxCoin);
     }
+
+    world->Update();
 }
 
 // Gameplay Screen Draw logic
@@ -63,8 +127,10 @@ void DrawGameplayScreen(void)
     // TODO: Draw GAMEPLAY screen here!
     DrawRectangle(0, 0, GetScreenWidth(), GetScreenHeight(), PURPLE);
     Vector2 pos = { 20, 10 };
-    DrawTextEx(font, "GAMEPLAY SCREEN", pos, font.baseSize*3.0f, 4, MAROON);
+    //DrawTextEx(font, "GAMEPLAY SCREEN", pos, font.baseSize*3.0f, 4, MAROON);
     DrawText("PRESS ENTER or TAP to JUMP to ENDING SCREEN", 130, 220, 20, MAROON);
+
+    world->Render();
 }
 
 // Gameplay Screen Unload logic
