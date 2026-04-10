@@ -20,6 +20,15 @@ namespace ecs {
         ComponentType type = std::visit([](const auto& c) -> ComponentType { return c.Type; }, component);
         entity->components.insert({ type, std::move(component) });
 
+        // Mark views using this component type as dirty
+        for (const auto& [viewKey, viewEntities] : viewCache)
+        {
+            if (viewKey & (1ULL << (int)type))
+            {
+                dirtyViewComponents.insert(viewKey);
+            }
+        }
+
         EmitEvent(ComponentAddedEvent{ entity });
     }
 
@@ -64,10 +73,15 @@ namespace ecs {
             // Handle entity destruction requests
             if (auto destroyEntityEvent = std::get_if<RequestDestroyEntityEvent>(&event))
             {
-                delete destroyEntityEvent->entity;
-
                 // Remove from bookkeeping
                 entities.erase(std::remove(entities.begin(), entities.end(), destroyEntityEvent->entity), entities.end());
+
+                // Clear all cached views
+                // dirtyViewComponents does not need to be updated
+                // since this in itself will invalidate all views
+                viewCache.clear();
+
+                delete destroyEntityEvent->entity;
             }
 
             // Forward event

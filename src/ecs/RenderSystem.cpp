@@ -40,7 +40,7 @@ namespace ecs
     void RenderSystem::Render()
     {
         // Note: BeginDrawing() and EndDrawing() is handled by the main loop
-        for (Entity* entity : world->GetEntities())
+        for (Entity* entity : world->GetAllEntities())
         {
             // Draw entities with textures
             auto textureComp = entity->GetComponent<TextureComponent>();
