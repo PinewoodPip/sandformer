@@ -17,6 +17,7 @@ namespace ecs {
         Gravity,
         Currency,
         Inventory,
+        Solid,
     };
 
     enum class CurrencyType : char
@@ -75,6 +76,11 @@ namespace ecs {
         std::map<CurrencyType, int> currencies;
     };
 
+    struct SolidComponent
+    {
+        static constexpr ComponentType Type = ComponentType::Solid;
+    };
+
     using AnyComponent = std::variant<
         TransformComponent,
         BoundingBoxComponent,
@@ -82,6 +88,7 @@ namespace ecs {
         PlayerComponent,
         PhysicsComponent,
         CurrencyComponent,
-        InventoryComponent
+        InventoryComponent,
+        SolidComponent
     >;
 }

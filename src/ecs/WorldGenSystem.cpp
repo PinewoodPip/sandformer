@@ -25,6 +25,7 @@ void WorldGenSystem::CreateBlock(Vector2 position)
         Vector2{BLOCK_SIZE, BLOCK_SIZE},
         Vector2{0, 0},
         });
+    world->AddComponent(ground, ecs::SolidComponent{});
     world->AddComponent(ground, ecs::TextureComponent{ "resources/grass.png", Vector2{ BLOCK_SIZE, BLOCK_SIZE } });
 }
 

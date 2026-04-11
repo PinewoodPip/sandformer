@@ -22,7 +22,7 @@ namespace ecs
 
             physics->isGrounded = false; // Will be re-set after checking collision
 
-            // Check for collisions and push away
+            // Check for collisions and push away if they also have the Solid component
             for (auto [otherEntity, otherBox, otherTransform] : world->GetEntities<BoundingBoxComponent, TransformComponent>())
             {
                 if (otherBox == boundingBox)
@@ -43,34 +43,39 @@ namespace ecs
                 if (aLeft >= bRight || aRight <= bLeft || aTop >= bBottom || aBottom <= bTop)
                     continue;
 
-                // Use the pre-move position to determine which side to push to
-                // This also prevents overshooting collisions.
-                float prevBottom = prevPosition.y + boundingBox->offset.y + boundingBox->size.y;
-                float prevTop = prevPosition.y + boundingBox->offset.y;
-                float prevRight = prevPosition.x + boundingBox->offset.x + boundingBox->size.x;
-                float prevLeft = prevPosition.x + boundingBox->offset.x;
-
-                if (prevBottom <= bTop)
-                {
-                    transform->position.y = bTop - boundingBox->offset.y - boundingBox->size.y;
-                    transform->velocity.y = 0.0f;
-                    physics->isGrounded = true;
-                }
-                else if (prevTop >= bBottom)
-                {
-                    transform->position.y = bBottom - boundingBox->offset.y;
-                    transform->velocity.y = 0.0f;
-                }
-                else if (prevRight <= bLeft)
-                {
-                    transform->position.x = bLeft - boundingBox->offset.x - boundingBox->size.x;
-                }
-                else if (prevLeft >= bRight)
-                {
-                    transform->position.x = bRight - boundingBox->offset.x;
-                }
-
+                // Throw collision event
                 world->EmitEvent(CollisionEvent{ entity, otherEntity });
+
+                // Push away if the other entity is solid
+                if (otherEntity->GetComponent<SolidComponent>())
+                {
+                    // Use the pre-move position to determine which side to push to
+                    // This also prevents overshooting collisions.
+                    float prevBottom = prevPosition.y + boundingBox->offset.y + boundingBox->size.y;
+                    float prevTop = prevPosition.y + boundingBox->offset.y;
+                    float prevRight = prevPosition.x + boundingBox->offset.x + boundingBox->size.x;
+                    float prevLeft = prevPosition.x + boundingBox->offset.x;
+
+                    if (prevBottom <= bTop)
+                    {
+                        transform->position.y = bTop - boundingBox->offset.y - boundingBox->size.y;
+                        transform->velocity.y = 0.0f;
+                        physics->isGrounded = true;
+                    }
+                    else if (prevTop >= bBottom)
+                    {
+                        transform->position.y = bBottom - boundingBox->offset.y;
+                        transform->velocity.y = 0.0f;
+                    }
+                    else if (prevRight <= bLeft)
+                    {
+                        transform->position.x = bLeft - boundingBox->offset.x - boundingBox->size.x;
+                    }
+                    else if (prevLeft >= bRight)
+                    {
+                        transform->position.x = bRight - boundingBox->offset.x;
+                    }
+                }
             }
         }
     }
