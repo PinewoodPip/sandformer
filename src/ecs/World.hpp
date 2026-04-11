@@ -2,6 +2,7 @@
 
 #include "Components.hpp"
 #include "Events.hpp"
+#include "System.hpp"
 #include <vector>
 #include <queue>
 #include <set>
@@ -15,7 +16,6 @@ namespace ecs {
     using ViewKey = std::vector<ComponentType>;
 
     class Entity;
-    class System;
 
 	template <typename... Ts>
 	class EntityView
@@ -141,19 +141,5 @@ namespace ecs {
             }();
             return key;
         }
-    };
-
-    class System
-    {
-    public:
-        virtual void OnStart() {};
-        virtual void ProcessEvent(const AnyEvent& event) {};
-        virtual void Update() {};
-        virtual void Render() {};
-
-        System(World* world) : world(world) {}
-
-    protected:
-        World* world;
     };
 }
