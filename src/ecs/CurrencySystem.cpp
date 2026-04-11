@@ -14,6 +14,17 @@ namespace ecs
         world->EmitEvent(RequestDestroyEntityEvent{ currencyEntity });
     }
 
+    void CurrencySystem::Render()
+    {
+        // Show the player's coins in top-left
+        for (const auto& [entity, player, inventory] : world->GetEntities<PlayerComponent, InventoryComponent>())
+        {
+            auto it = inventory->currencies.find(CurrencyType::Coin);
+            int coins = (it != inventory->currencies.end()) ? it->second : 0; // TODO extract utility getter function
+            DrawText(TextFormat("Coins: %d", coins), 10, 10, 20, WHITE);
+        }
+    }
+
     void CurrencySystem::ProcessEvent(const AnyEvent& event)
     {
         if (const auto* e = std::get_if<CollisionEvent>(&event))

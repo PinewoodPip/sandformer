@@ -10,6 +10,7 @@ namespace ecs
         CurrencySystem(World* world) : System(world) {}
 
         void ProcessEvent(const AnyEvent& event) override;
+        void Render() override;
 
     private:
         void AddCurrency(InventoryComponent* inventory, CurrencyType type, int amount);
