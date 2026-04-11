@@ -2,7 +2,19 @@
 
 namespace ecs
 {
-    void ecs::CurrencySystem::ProcessEvent(const AnyEvent& event)
+    void CurrencySystem::AddCurrency(InventoryComponent* inventory, CurrencyType type, int amount)
+    {
+        inventory->currencies[type] += amount;
+    }
+
+    void CurrencySystem::PickUpCurrency(InventoryComponent* inventory, Entity* currencyEntity, CurrencyComponent* currency)
+    {
+        AddCurrency(inventory, currency->currencyType, currency->amount);
+        world->EmitEvent(CurrencyPickedUpEvent{ currencyEntity, currency->currencyType, currency->amount });
+        world->EmitEvent(RequestDestroyEntityEvent{ currencyEntity });
+    }
+
+    void CurrencySystem::ProcessEvent(const AnyEvent& event)
     {
         if (const auto* e = std::get_if<CollisionEvent>(&event))
         {

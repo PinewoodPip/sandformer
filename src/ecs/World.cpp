@@ -5,6 +5,16 @@
 
 namespace ecs {
 
+    void World::AddSystem(System* system)
+    {
+        systems.push_back(system);
+    }
+
+    void World::EmitEvent(AnyEvent event)
+    {
+        events.push(event);
+    }
+
     Entity* World::CreateEntity()
     {
         Entity* entity = new Entity(_NextEntityID++);

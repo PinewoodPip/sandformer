@@ -12,16 +12,7 @@ namespace ecs
         void ProcessEvent(const AnyEvent& event) override;
 
     private:
-        void AddCurrency(InventoryComponent* inventory, CurrencyType type, int amount)
-        {
-            inventory->currencies[type] += amount;
-        }
-
-        void PickUpCurrency(InventoryComponent* inventory, Entity* currencyEntity, CurrencyComponent* currency)
-        {
-            AddCurrency(inventory, currency->currencyType, currency->amount);
-            world->EmitEvent(CurrencyPickedUpEvent{ currencyEntity, currency->currencyType, currency->amount });
-            world->EmitEvent(RequestDestroyEntityEvent{ currencyEntity });
-        }
+        void AddCurrency(InventoryComponent* inventory, CurrencyType type, int amount);
+        void PickUpCurrency(InventoryComponent* inventory, Entity* currencyEntity, CurrencyComponent* currency);
     };
 }

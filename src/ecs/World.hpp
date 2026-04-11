@@ -83,15 +83,8 @@ namespace ecs {
         void Render();
         void AddComponent(Entity* entity, AnyComponent component);
 
-        void AddSystem(System* system)
-        {
-            systems.push_back(system);
-        }
-
-        void EmitEvent(AnyEvent event)
-        {
-            events.push(event);
-        }
+        void AddSystem(System* system);
+        void EmitEvent(AnyEvent event);
     
         template <typename... Ts>
         inline EntityView<Ts...> GetEntities()
