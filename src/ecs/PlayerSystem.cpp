@@ -6,17 +6,42 @@ namespace ecs
     {
         for (auto [_, player, transform, physics] : world->GetEntities<PlayerComponent, TransformComponent, PhysicsComponent>())
         {
-            Vector2 movement{ 0.f, 0.f }; // TODO also support arrow keys
-            if (IsKeyDown(KEY_W) && physics->isGrounded)
-                movement.y = -JUMP_VELOCITY;
+            // Handle horizontal movement
+            float targetXSpeed = 0.0f; // TODO also support arrow keys
             if (IsKeyDown(KEY_A))
-                movement.x -= PLAYER_SPEED;
+                targetXSpeed = -MAX_SPEED;
             else if (IsKeyDown(KEY_D))
-                movement.x += PLAYER_SPEED;
+                targetXSpeed = MAX_SPEED;
 
-            // TODO use acceleration instead
-            transform->velocity.x = movement.x;
-            transform->velocity.y = movement.y;
+            if (targetXSpeed != 0.0f)
+            {
+                transform->velocity.x += ACCELERATION * (targetXSpeed > 0.0f ? 1.0f : -1.0f);
+                if (transform->velocity.x > MAX_SPEED)
+                    transform->velocity.x = MAX_SPEED;
+                else if (transform->velocity.x < -MAX_SPEED)
+                    transform->velocity.x = -MAX_SPEED;
+            }
+            else
+            {
+                if (transform->velocity.x > ACCELERATION_DECAY)
+                    transform->velocity.x -= ACCELERATION_DECAY;
+                else if (transform->velocity.x < -ACCELERATION_DECAY)
+                    transform->velocity.x += ACCELERATION_DECAY;
+                else
+                    transform->velocity.x = 0.0f;
+            }
+
+            // Handle jump physics
+            // Initial press gives burst of velocity, holding it lets the player jump higher
+            // Roughly the NES Mario jump
+            if (IsKeyPressed(KEY_W) && physics->isGrounded)
+            {
+                transform->velocity.y = -JUMP_VELOCITY;
+            }
+            else if (IsKeyDown(KEY_W) && (transform->velocity.y < 0.0f))
+            {
+                transform->velocity.y -= JUMP_VELOCITY_HOLD_BOOST;
+            }
         }
     }
 }
