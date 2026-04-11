@@ -30,11 +30,11 @@
 #include "ecs/PhysicsSystem.hpp"
 #include "ecs/CurrencySystem.hpp"
 #include "ecs/RenderSystem.hpp"
+#include "ecs/WorldGenSystem.hpp"
 
 using namespace ecs;
 
-const int BLOCK_SIZE = 64;
-const int COIN_SIZE = 32;
+const int PLAYER_SIZE = 64;
 
 //----------------------------------------------------------------------------------
 // Module Variables Definition (local)
@@ -62,13 +62,12 @@ void InitGameplayScreen(void)
     Entity* player = world->CreateEntity();
     world->AddComponent(player, ecs::TransformComponent{});
     world->AddComponent(player, ecs::BoundingBoxComponent{
-        Vector2{1, 1},
+        Vector2{PLAYER_SIZE, PLAYER_SIZE},
         Vector2{0, 0},
         });
 	world->AddComponent(player, ecs::PlayerComponent{});
     world->AddComponent(player, ecs::PhysicsComponent{});
-    //LoadTexture("resources/mecha.png"); // TODO!
-    world->AddComponent(player, ecs::TextureComponent{ "resources/placeholder.png" });
+    world->AddComponent(player, ecs::TextureComponent{ "resources/placeholder.png", {PLAYER_SIZE, PLAYER_SIZE} });
     world->AddComponent(player, ecs::InventoryComponent{});
 
     // Create systems
@@ -80,31 +79,10 @@ void InitGameplayScreen(void)
     world->AddSystem(physicsSystem);
     CurrencySystem* currencySystem = new CurrencySystem(world);
     world->AddSystem(currencySystem);
+    WorldGenSystem* worldGenSystem = new WorldGenSystem(world);
+    world->AddSystem(worldGenSystem);
 
-    // Create ground
-    for (int i = 0; i < 10; i++)
-    {
-        Entity* ground = world->CreateEntity();
-        world->AddComponent(ground, ecs::TransformComponent{ Vector2{ i * (float)BLOCK_SIZE, 300.0f } });
-        world->AddComponent(ground, ecs::BoundingBoxComponent{
-            Vector2{BLOCK_SIZE, BLOCK_SIZE},
-            Vector2{0, 0},
-            });
-		world->AddComponent(ground, ecs::TextureComponent{ "resources/grass.png", Vector2{ BLOCK_SIZE, BLOCK_SIZE } });
-    }
-
-    // Create coins
-    for (int i = 0; i < 6; i++)
-    {
-        Entity* coin = world->CreateEntity();
-        world->AddComponent(coin, ecs::TransformComponent{ Vector2{ 50 + i * (float)BLOCK_SIZE, 100.0f } });
-        world->AddComponent(coin, ecs::BoundingBoxComponent{
-            Vector2{COIN_SIZE, COIN_SIZE},
-            Vector2{0, 0},
-            });
-		world->AddComponent(coin, ecs::CurrencyComponent{ CurrencyType::Coin, 1 });
-		world->AddComponent(coin, ecs::TextureComponent{ "resources/coin.png", Vector2{ COIN_SIZE, COIN_SIZE } });
-    }
+    world->Start();
 }
 
 // Gameplay Screen Update logic
