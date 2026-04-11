@@ -1,4 +1,27 @@
-file(GLOB_RECURSE SOURCE_FILES CONFIGURE_DEPENDS *.c *.cpp)
-file(GLOB_RECURSE HEADER_FILES CONFIGURE_DEPENDS *.h *.hpp)
+target_sources(${PROJECT_NAME} PRIVATE
+    screen_gameplay.cpp
+    screen_logo.c
+    screen_title.c
+    screen_options.c
+    screen_ending.c
+    raylib_game.c
+    ecs/Entity.cpp
+    ecs/World.cpp
+    ecs/PhysicsSystem.cpp
+    ecs/PlayerSystem.cpp
+    ecs/RenderSystem.cpp
+    ecs/CurrencySystem.cpp
+)
 
-target_sources(${PROJECT_NAME} PRIVATE ${SOURCE_FILES} ${HEADER_FILES})
+target_precompile_headers(${PROJECT_NAME} PRIVATE
+    $<$<COMPILE_LANGUAGE:CXX>:${CMAKE_CURRENT_SOURCE_DIR}/ecs/Entity.hpp>
+)
+
+set_source_files_properties(
+    screen_logo.c
+    screen_title.c
+    screen_options.c
+    screen_ending.c
+    raylib_game.c
+    PROPERTIES SKIP_PRECOMPILE_HEADERS ON
+)
