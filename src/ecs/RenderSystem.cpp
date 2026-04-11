@@ -44,7 +44,9 @@ namespace ecs
         for (const auto& [entity, transform, textureComp] : world->GetEntities<TransformComponent, TextureComponent>())
         {
             Texture2D texture = TryGetTexture2D(textureComp->path);
-            DrawTexture(texture, transform->position.x, transform->position.y, WHITE); // TODO use scale from the component
+            Rectangle source = { 0.0f, 0.0f, (float)texture.width, (float)texture.height };
+            Rectangle dest = { transform->position.x, transform->position.y, textureComp->size.x, textureComp->size.y };
+            DrawTexturePro(texture, source, dest, Vector2{ 0.0f, 0.0f }, 0.0f, WHITE);
         }
     }
 }
