@@ -2,8 +2,6 @@ target_sources(${PROJECT_NAME} PRIVATE
     screen_gameplay.cpp
     screen_logo.c
     screen_title.c
-    screen_options.c
-    screen_ending.c
     raylib_game.c
     ecs/Entity.cpp
     ecs/World.cpp
@@ -20,8 +18,6 @@ target_precompile_headers(${PROJECT_NAME} PRIVATE
 set_source_files_properties(
     screen_logo.c
     screen_title.c
-    screen_options.c
-    screen_ending.c
     raylib_game.c
     PROPERTIES SKIP_PRECOMPILE_HEADERS ON
 )

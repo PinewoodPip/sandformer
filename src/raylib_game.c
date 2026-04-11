@@ -96,9 +96,7 @@ int main(void)
     {
         case LOGO: UnloadLogoScreen(); break;
         case TITLE: UnloadTitleScreen(); break;
-        case OPTIONS: UnloadOptionsScreen(); break;
         case GAMEPLAY: UnloadGameplayScreen(); break;
-        case ENDING: UnloadEndingScreen(); break;
         default: break;
     }
 
@@ -126,9 +124,7 @@ static void ChangeToScreen(int screen)
     {
         case LOGO: UnloadLogoScreen(); break;
         case TITLE: UnloadTitleScreen(); break;
-        case OPTIONS: UnloadOptionsScreen(); break;
         case GAMEPLAY: UnloadGameplayScreen(); break;
-        case ENDING: UnloadEndingScreen(); break;
         default: break;
     }
 
@@ -137,9 +133,7 @@ static void ChangeToScreen(int screen)
     {
         case LOGO: InitLogoScreen(); break;
         case TITLE: InitTitleScreen(); break;
-        case OPTIONS: InitOptionsScreen(); break;
         case GAMEPLAY: InitGameplayScreen(); break;
-        case ENDING: InitEndingScreen(); break;
         default: break;
     }
 
@@ -174,9 +168,7 @@ static void UpdateTransition(void)
             {
                 case LOGO: UnloadLogoScreen(); break;
                 case TITLE: UnloadTitleScreen(); break;
-                case OPTIONS: UnloadOptionsScreen(); break;
                 case GAMEPLAY: UnloadGameplayScreen(); break;
-                case ENDING: UnloadEndingScreen(); break;
                 default: break;
             }
 
@@ -185,9 +177,7 @@ static void UpdateTransition(void)
             {
                 case LOGO: InitLogoScreen(); break;
                 case TITLE: InitTitleScreen(); break;
-                case OPTIONS: InitOptionsScreen(); break;
                 case GAMEPLAY: InitGameplayScreen(); break;
-                case ENDING: InitEndingScreen(); break;
                 default: break;
             }
 
@@ -244,27 +234,9 @@ static void UpdateDrawFrame(void)
                 else if (FinishTitleScreen() == 2) TransitionToScreen(GAMEPLAY);
 
             } break;
-            case OPTIONS:
-            {
-                UpdateOptionsScreen();
-
-                if (FinishOptionsScreen()) TransitionToScreen(TITLE);
-
-            } break;
             case GAMEPLAY:
             {
                 UpdateGameplayScreen();
-
-                if (FinishGameplayScreen() == 1) TransitionToScreen(ENDING);
-                //else if (FinishGameplayScreen() == 2) TransitionToScreen(TITLE);
-
-            } break;
-            case ENDING:
-            {
-                UpdateEndingScreen();
-
-                if (FinishEndingScreen() == 1) TransitionToScreen(TITLE);
-
             } break;
             default: break;
         }
@@ -282,9 +254,7 @@ static void UpdateDrawFrame(void)
         {
             case LOGO: DrawLogoScreen(); break;
             case TITLE: DrawTitleScreen(); break;
-            case OPTIONS: DrawOptionsScreen(); break;
             case GAMEPLAY: DrawGameplayScreen(); break;
-            case ENDING: DrawEndingScreen(); break;
             default: break;
         }
 
