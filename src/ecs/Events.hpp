@@ -7,40 +7,43 @@ namespace ecs {
 
     class Entity; // forward declaration
 
-    struct EntityCreatedEvent
-    {
-        Entity* entity;
-    };
+    namespace events {
 
-    struct ComponentAddedEvent
-    {
-        Entity* entity;
-    };
+        struct EntityCreated
+        {
+            Entity* entity;
+        };
 
-    struct CollisionEvent
-    {
-        Entity* entity;
-        Entity* otherEntity;
-    };
+        struct ComponentAdded
+        {
+            Entity* entity;
+        };
 
-    struct CurrencyPickedUpEvent
-    {
-        Entity* entity;
-        CurrencyType currencyType;
-        int amount;
-    };
+        struct Collision
+        {
+            Entity* entity;
+            Entity* otherEntity;
+        };
 
-    struct RequestDestroyEntityEvent
-    {
-        Entity* entity;
-    };
+        struct CurrencyPickedUp
+        {
+            Entity* entity;
+            CurrencyType currencyType;
+            int amount;
+        };
 
-    struct RequestBlockCreateEvent
-    {
-        GridPos pos;
-        BlockType blockType = BlockType::Grass;
-    };
+        struct RequestDestroyEntity
+        {
+            Entity* entity;
+        };
 
-    using AnyEvent = std::variant<EntityCreatedEvent, ComponentAddedEvent, CollisionEvent, CurrencyPickedUpEvent, RequestDestroyEntityEvent, RequestBlockCreateEvent>;
+        struct RequestCreateBlock
+        {
+            GridPos pos;
+            BlockType blockType = BlockType::Grass;
+        };
 
+        using AnyEvent = std::variant<EntityCreated, ComponentAdded, Collision, CurrencyPickedUp, RequestDestroyEntity, RequestCreateBlock>;
+
+    }
 }

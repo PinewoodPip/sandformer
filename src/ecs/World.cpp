@@ -3,6 +3,8 @@
 #include <algorithm>
 #include <exception>
 
+using namespace ecs::events;
+
 namespace ecs {
 
     void World::AddSystem(System* system)
@@ -20,7 +22,7 @@ namespace ecs {
         Entity* entity = new Entity(_NextEntityID++);
         entities.push_back(entity);
 
-        EmitEvent(EntityCreatedEvent{ entity });
+        EmitEvent(EntityCreated{ entity });
 
         return entity;
     }
@@ -39,7 +41,7 @@ namespace ecs {
             }
         }
 
-        EmitEvent(ComponentAddedEvent{ entity });
+        EmitEvent(ComponentAdded{ entity });
     }
 
     void World::Start()
@@ -97,7 +99,7 @@ namespace ecs {
             const AnyEvent& event = events.front();
 
             // Handle entity destruction requests
-            if (auto destroyEntityEvent = std::get_if<RequestDestroyEntityEvent>(&event))
+            if (auto destroyEntityEvent = std::get_if<RequestDestroyEntity>(&event))
             {
                 DestroyEntity(destroyEntityEvent->entity);
             }

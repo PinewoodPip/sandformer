@@ -1,5 +1,7 @@
 #include "PhysicsSystem.hpp"
 
+using namespace ecs::events;
+
 namespace ecs
 {
     void PhysicsSystem::Update()
@@ -44,7 +46,7 @@ namespace ecs
                     continue;
 
                 // Throw collision event
-                world->EmitEvent(CollisionEvent{ entity, otherEntity });
+                world->EmitEvent(Collision{ entity, otherEntity });
 
                 // Push away if the other entity is solid
                 if (otherEntity->GetComponent<SolidComponent>())

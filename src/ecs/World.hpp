@@ -67,7 +67,7 @@ namespace ecs {
     {
     private:
         std::vector<Entity*> entities;
-        std::queue<AnyEvent> events;
+        std::queue<events::AnyEvent> events;
         int _NextEntityID = 0;
         bool started = false;
 
@@ -84,7 +84,7 @@ namespace ecs {
         void AddComponent(Entity* entity, AnyComponent component);
 
         void AddSystem(System* system);
-        void EmitEvent(AnyEvent event);
+        void EmitEvent(events::AnyEvent event);
     
         template <typename... Ts>
         inline EntityView<Ts...> GetEntities()

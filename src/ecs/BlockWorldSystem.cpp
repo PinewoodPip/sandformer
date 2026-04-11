@@ -2,6 +2,7 @@
 #include "World.hpp"
 
 using namespace ecs;
+using namespace ecs::events;
 
 void BlockWorldSystem::Update()
 {
@@ -35,7 +36,7 @@ void BlockWorldSystem::BreakBlockAtPos(Vector2 pos)
         };
         if (CheckCollisionPointRec(pos, blockRect))
         {
-            world->EmitEvent(RequestDestroyEntityEvent{ entity });
+            world->EmitEvent(RequestDestroyEntity{ entity });
             break; // There can only be 1 block under the cursor
         }
     }
@@ -59,7 +60,7 @@ bool BlockWorldSystem::TryPlaceBlock(BlockType blockType, Vector2 pos)
 void BlockWorldSystem::ProcessEvent(const AnyEvent& event)
 {
     // Handle requests to place blocks
-    if (const auto* e = std::get_if<RequestBlockCreateEvent>(&event))
+    if (const auto* e = std::get_if<RequestCreateBlock>(&event))
     {
         TryPlaceBlock(e->blockType, Vector2{
             e->pos.x * (float)BLOCK_SIZE,

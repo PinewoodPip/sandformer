@@ -1,5 +1,7 @@
 #include "CurrencySystem.hpp"
 
+using namespace ecs::events;
+
 namespace ecs
 {
     void CurrencySystem::AddCurrency(InventoryComponent* inventory, CurrencyType type, int amount)
@@ -10,8 +12,8 @@ namespace ecs
     void CurrencySystem::PickUpCurrency(InventoryComponent* inventory, Entity* currencyEntity, CurrencyComponent* currency)
     {
         AddCurrency(inventory, currency->currencyType, currency->amount);
-        world->EmitEvent(CurrencyPickedUpEvent{ currencyEntity, currency->currencyType, currency->amount });
-        world->EmitEvent(RequestDestroyEntityEvent{ currencyEntity });
+        world->EmitEvent(CurrencyPickedUp{ currencyEntity, currency->currencyType, currency->amount });
+        world->EmitEvent(RequestDestroyEntity{ currencyEntity });
     }
 
     void CurrencySystem::Render()
@@ -27,7 +29,7 @@ namespace ecs
 
     void CurrencySystem::ProcessEvent(const AnyEvent& event)
     {
-        if (const auto* e = std::get_if<CollisionEvent>(&event))
+        if (const auto* e = std::get_if<Collision>(&event))
         {
             auto* entityA = e->entity;
             auto* entityB = e->otherEntity;

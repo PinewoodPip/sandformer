@@ -12,7 +12,7 @@ namespace ecs {
         using System::System;
 
         void Update() override;
-        void ProcessEvent(const AnyEvent& event) override;
+        void ProcessEvent(const events::AnyEvent& event) override;
 
     private:
         void BreakBlockAtPos(Vector2 pos);

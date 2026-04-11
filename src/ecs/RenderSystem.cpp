@@ -1,5 +1,7 @@
 #include "RenderSystem.hpp"
 
+using namespace ecs::events;
+
 namespace ecs
 {
     RenderSystem::~RenderSystem()

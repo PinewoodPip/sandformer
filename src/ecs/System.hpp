@@ -11,7 +11,7 @@ namespace ecs {
     {
     public:
         virtual void OnStart() {}; // Called when the ECS world starts, use for setup routines
-        virtual void ProcessEvent(const AnyEvent& event) {};
+        virtual void ProcessEvent(const events::AnyEvent& event) {};
         virtual void Update() {}; // Called every tick
         virtual void Render() {}; // Intended to draw graphics using raylib
 
