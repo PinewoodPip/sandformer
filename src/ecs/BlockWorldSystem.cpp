@@ -19,13 +19,13 @@ void BlockWorldSystem::Update()
             (float)((int)(mousePos.x / BLOCK_SIZE) * BLOCK_SIZE),
             (float)((int)(mousePos.y / BLOCK_SIZE) * BLOCK_SIZE),
         };
-        PlaceBlockAtPos(mouseGridPos);
+        TryPlaceBlock(BlockType::Grass, mouseGridPos);
     }
 }
 
 void BlockWorldSystem::BreakBlockAtPos(Vector2 pos)
 {
-    for (auto [entity, transform, bbox, destructible] : world->GetEntities<TransformComponent, BoundingBoxComponent, DestructibleComponent>())
+    for (auto [entity, transform, bbox, block] : world->GetEntities<TransformComponent, BoundingBoxComponent, BlockComponent>())
     {
         Rectangle blockRect = {
             transform->position.x + bbox->offset.x,
@@ -41,7 +41,7 @@ void BlockWorldSystem::BreakBlockAtPos(Vector2 pos)
     }
 }
 
-void BlockWorldSystem::PlaceBlockAtPos(Vector2 pos)
+bool BlockWorldSystem::TryPlaceBlock(BlockType blockType, Vector2 pos)
 {
     // Don't place if a block or other solid already occupies this cell
     // TODO refactor this system to better keep track of occupied "cells"
@@ -49,11 +49,11 @@ void BlockWorldSystem::PlaceBlockAtPos(Vector2 pos)
     {
         if ((transform->position.x == pos.x) && (transform->position.y == pos.y))
         {
-            return;
+            return false;
         }
     }
-
-    PlaceBlock(pos);
+    PlaceBlock(blockType, pos);
+    return true;
 }
 
 void BlockWorldSystem::ProcessEvent(const AnyEvent& event)
@@ -61,15 +61,16 @@ void BlockWorldSystem::ProcessEvent(const AnyEvent& event)
     // Handle requests to place blocks
     if (const auto* e = std::get_if<RequestBlockCreateEvent>(&event))
     {
-        PlaceBlockAtPos(Vector2{
+        TryPlaceBlock(e->blockType, Vector2{
             e->pos.x * (float)BLOCK_SIZE,
             e->pos.y * (float)BLOCK_SIZE,
         });
     }
 }
 
-void BlockWorldSystem::PlaceBlock(Vector2 position)
+void BlockWorldSystem::PlaceBlock(BlockType blockType, Vector2 position)
 {
+    BlockDescriptor desc = GetBlockDescriptor(blockType);
     Entity* block = world->CreateEntity();
     world->AddComponent(block, TransformComponent{ position });
     world->AddComponent(block, BoundingBoxComponent{
@@ -77,6 +78,6 @@ void BlockWorldSystem::PlaceBlock(Vector2 position)
         Vector2{ 0.0f, 0.0f },
     });
     world->AddComponent(block, SolidComponent{});
-    world->AddComponent(block, DestructibleComponent{});
-    world->AddComponent(block, TextureComponent{ "resources/grass.png", Vector2{ BLOCK_SIZE, BLOCK_SIZE } });
+    world->AddComponent(block, BlockComponent{ blockType });
+    world->AddComponent(block, TextureComponent{ desc.texturePath, Vector2{ BLOCK_SIZE, BLOCK_SIZE } });
 }

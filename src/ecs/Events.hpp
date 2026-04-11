@@ -38,6 +38,7 @@ namespace ecs {
     struct RequestBlockCreateEvent
     {
         GridPos pos;
+        BlockType blockType = BlockType::Grass;
     };
 
     using AnyEvent = std::variant<EntityCreatedEvent, ComponentAddedEvent, CollisionEvent, CurrencyPickedUpEvent, RequestDestroyEntityEvent, RequestBlockCreateEvent>;

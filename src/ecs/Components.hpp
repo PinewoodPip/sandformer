@@ -18,8 +18,30 @@ namespace ecs {
         Currency,
         Inventory,
         Solid,
-        Destructible,
+        Block,
     };
+
+    enum class BlockType
+    {
+        Grass,
+        Dirt,
+    };
+
+    struct BlockDescriptor
+    {
+        std::string texturePath;
+    };
+
+    // TODO define these externally
+    inline BlockDescriptor GetBlockDescriptor(BlockType type)
+    {
+        switch (type)
+        {
+            case BlockType::Grass: return { "resources/grass.png" };
+            case BlockType::Dirt:  return { "resources/dirt.png" };
+        }
+        throw std::exception("Invalid block type");
+    }
 
     // Represents a column & row position on the block grid.
     struct GridPos
@@ -89,9 +111,11 @@ namespace ecs {
         static constexpr ComponentType Type = ComponentType::Solid;
     };
 
-    struct DestructibleComponent
+    struct BlockComponent
     {
-        static constexpr ComponentType Type = ComponentType::Destructible;
+        static constexpr ComponentType Type = ComponentType::Block;
+
+        BlockType blockType = BlockType::Grass;
     };
 
     using AnyComponent = std::variant<
@@ -103,6 +127,6 @@ namespace ecs {
         CurrencyComponent,
         InventoryComponent,
         SolidComponent,
-        DestructibleComponent
+        BlockComponent
     >;
 }

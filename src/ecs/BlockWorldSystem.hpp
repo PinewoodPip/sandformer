@@ -16,7 +16,7 @@ namespace ecs {
 
     private:
         void BreakBlockAtPos(Vector2 pos);
-        void PlaceBlockAtPos(Vector2 pos);
-        void PlaceBlock(Vector2 position);
+        bool TryPlaceBlock(BlockType blockType, Vector2 pos);
+        void PlaceBlock(BlockType blockType, Vector2 position);
     };
 }
