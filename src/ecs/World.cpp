@@ -23,7 +23,7 @@ namespace ecs {
         // Mark views using this component type as dirty
         for (const auto& [viewKey, viewEntities] : viewCache)
         {
-            if (viewKey & (1ULL << (int)type))
+            if (std::find(viewKey.begin(), viewKey.end(), type) != viewKey.end())
             {
                 dirtyViewComponents.insert(viewKey);
             }

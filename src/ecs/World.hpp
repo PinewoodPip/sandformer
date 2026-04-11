@@ -8,8 +8,11 @@
 #include <map>
 #include <tuple>
 #include <optional>
+#include <algorithm>
 
 namespace ecs {
+
+    using ViewKey = std::vector<ComponentType>;
 
     class Entity;
     class System;
@@ -69,8 +72,8 @@ namespace ecs {
         bool started = false;
 
         std::vector<System*> systems;
-        std::map<uint64_t, std::vector<Entity*>> viewCache;
-        std::set<uint64_t> dirtyViewComponents;
+        std::map<ViewKey, std::vector<Entity*>> viewCache;
+        std::set<ViewKey> dirtyViewComponents;
 
     public:
         Entity* CreateEntity();
@@ -93,14 +96,14 @@ namespace ecs {
         template <typename... Ts>
         inline EntityView<Ts...> GetEntities()
         {
-            uint64_t bitmask = GetViewKey<Ts...>();
-            auto view = viewCache.find(bitmask);
-            bool needsRebuild = dirtyViewComponents.find(bitmask) != dirtyViewComponents.end();
+            const ViewKey& key = GetViewKey<Ts...>();
+            auto view = viewCache.find(key);
+            bool needsRebuild = dirtyViewComponents.find(key) != dirtyViewComponents.end();
 
             if (view == viewCache.end() || needsRebuild)
             {
                 RebuildView<Ts...>();
-                view = viewCache.find(bitmask);
+                view = viewCache.find(key);
             }
 
             return EntityView<Ts...>{ view->second };
@@ -119,7 +122,7 @@ namespace ecs {
         template <typename... Ts>
         void RebuildView()
         {
-            uint64_t bitmask = GetViewKey<Ts...>();
+            const ViewKey& key = GetViewKey<Ts...>();
             std::vector<Entity*> entitiesWithComponents;
             for (Entity* entity : entities)
             {
@@ -128,15 +131,22 @@ namespace ecs {
                     entitiesWithComponents.push_back(entity);
                 }
             }
-            viewCache[bitmask] = entitiesWithComponents;
+            viewCache[key] = entitiesWithComponents;
 
-            dirtyViewComponents.erase(bitmask);
+            dirtyViewComponents.erase(key);
         }
 
         template <typename... Ts>
-        uint64_t GetViewKey()
+        const ViewKey& GetViewKey()
         {
-            return (... | (1ULL << (int)Ts::Type));
+            // Will only be initialized once per combination of component types, thus the sort only runs once per combo
+            static const ViewKey key = []()
+            {
+                ViewKey k = { Ts::Type... };
+                std::sort(k.begin(), k.end());
+                return k;
+            }();
+            return key;
         }
     };
 
