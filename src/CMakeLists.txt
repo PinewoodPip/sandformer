@@ -10,6 +10,7 @@ target_sources(${PROJECT_NAME} PRIVATE
     ecs/RenderSystem.cpp
     ecs/CurrencySystem.cpp
     ecs/WorldGenSystem.cpp
+    ecs/BlockWorldSystem.cpp
 )
 
 target_precompile_headers(${PROJECT_NAME} PRIVATE

@@ -7,13 +7,13 @@ void WorldGenSystem::OnStart()
     // Create ground
     for (int i = 0; i < 10; i++)
     {
-        CreateBlock(Vector2{ i * (float)BLOCK_SIZE, 300.0f });
+        CreateBlock(SnapToGrid(Vector2{ i * (float)BLOCK_SIZE, 300.0f }));
     }
 
     // Create coins
     for (int i = 0; i < 6; i++)
     {
-        CreateCoin(Vector2{ 50 + i * (float)BLOCK_SIZE, 100.0f } );
+        CreateCoin(SnapToGrid(Vector2{ 100.0f + i * (float)BLOCK_SIZE, 100.0f }));
     }
 }
 
@@ -26,6 +26,7 @@ void WorldGenSystem::CreateBlock(Vector2 position)
         Vector2{0, 0},
         });
     world->AddComponent(ground, ecs::SolidComponent{});
+    world->AddComponent(ground, ecs::DestructibleComponent{});
     world->AddComponent(ground, ecs::TextureComponent{ "resources/grass.png", Vector2{ BLOCK_SIZE, BLOCK_SIZE } });
 }
 

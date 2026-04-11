@@ -18,6 +18,7 @@ namespace ecs {
         Currency,
         Inventory,
         Solid,
+        Destructible,
     };
 
     enum class CurrencyType : char
@@ -81,6 +82,11 @@ namespace ecs {
         static constexpr ComponentType Type = ComponentType::Solid;
     };
 
+    struct DestructibleComponent
+    {
+        static constexpr ComponentType Type = ComponentType::Destructible;
+    };
+
     using AnyComponent = std::variant<
         TransformComponent,
         BoundingBoxComponent,
@@ -89,6 +95,7 @@ namespace ecs {
         PhysicsComponent,
         CurrencyComponent,
         InventoryComponent,
-        SolidComponent
+        SolidComponent,
+        DestructibleComponent
     >;
 }

@@ -31,6 +31,7 @@
 #include "ecs/CurrencySystem.hpp"
 #include "ecs/RenderSystem.hpp"
 #include "ecs/WorldGenSystem.hpp"
+#include "ecs/BlockWorldSystem.hpp"
 
 using namespace ecs;
 
@@ -66,6 +67,8 @@ void InitGameplayScreen(void)
     world->AddSystem(currencySystem);
     WorldGenSystem* worldGenSystem = new WorldGenSystem(world);
     world->AddSystem(worldGenSystem);
+    BlockWorldSystem* blockWorldSystem = new BlockWorldSystem(world);
+    world->AddSystem(blockWorldSystem);
 
     world->Start();
 }
