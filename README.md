@@ -1,21 +1,50 @@
------------------------------------
 
-_DISCLAIMER:_
+A C++ 2D block platformer game built as a custom ECS case study, using [raylib](https://www.raylib.com/).
 
-Welcome to **raylib game template**!
+![Gameplay screenshot](docs/gameplay_screenshot.png)
 
-This template provides a base structure to start developing a small raylib game in plain C. The repo is also pre-configured with a default `LICENSE` (zlib/libpng) and a `README.md` (this one) to be properly filled by users. Feel free to change the LICENSE as required.
+**The current exciting end-user features:**
 
-All the sections defined by `$(Data to Fill)` are expected to be edited and filled properly. It's recommended to delete this disclaimer message after editing this `README.md` file.
+- Moving around and jumping
+- Collecting coins
+- Solid ground
 
-This template has been created to be used with raylib (www.raylib.com) and it's licensed under an unmodified zlib/libpng license.
+**The more exciting technical features:**
 
-_Copyright (c) 2014-2026 Ramon Santamaria ([@raysan5](https://github.com/raysan5))_
+- Custom entity component system, using:
+    - Pure-data struct-based components, no inheritance nor virtual calls, only variants for discriminators (see `Components.hpp`)
+    - Multiple *systems* with separation of concerns, operating on entities with the relevant components
+    - Event bus pattern for communicating systems (within `World.cpp`)
+    - Cached "views" into entities with specific component combinations for faster (and readable) query/iteration within systems, using variadic templates (`EntityView` class)
 
------------------------------------
-## Getting Started with this template
+`World` is the class that manages the ECS state, owning the entities, systems, and event queue. Its `Update()` method (called from the raylib boilerplate main loop) drives the game logic and rendering by calling each system's `Update()` and `Render()` methods, and processing events emitted by systems.
 
-#### Linux
+Currently the following systems exist:
+
+- **WorldGenSystem**: creates the ground blocks and coins
+- **PhysicsSystem**: applies gravity to entities with `PhysicsComponent` and handles collisions
+- **PlayerSystem**: handles movement/jump controls on the player entity
+- **RenderSystem**: draws entities with `TextureComponent` and caches loaded textures
+- **CurrencySystem**: handles the coin pickup mechanics, using a `CurrencyComponent` and `InventoryComponent` (on player entity)
+
+The main game loop code is based on the raylib game template: https://github.com/raysan5/raylib-game-template
+
+## Controls
+
+Keyboard:
+ - A/D: move left/right
+ - W: jump; hold to jump higher
+
+## Building
+
+As per the raylib game template, 2 build systems are setup:
+
+- Visual Studio 2022
+- CMake (preferred)
+
+The following building instructions are copied from the template's readme.
+
+### Linux
 When setting up this template on linux for the first time, install the dependencies from this page:
 ([Working on GNU Linux](https://github.com/raysan5/raylib/wiki/Working-on-GNU-Linux))
 
@@ -53,51 +82,8 @@ cmake --build build
 ```
 
 - Inside the build folder is another folder (named the same as the project name on CMakeLists.txt) with the executable and resources folder.
-- In order for resources to load properly, cd to `src` and run the executable (`../build/${PROJECT_NAME}/${PROJECT_NAME}`) from there.
-
 - cmake will automatically download a current release of raylib but if you want to use your local version you can pass `-DFETCHCONTENT_SOURCE_DIR_RAYLIB=<dir_with_raylib>` 
 
-## $(Game Title)
+## License
 
-![$(Game Title)](screenshots/screenshot000.png "$(Game Title)")
-
-### Description
-
-$(Your Game Description)
-
-### Features
-
- - $(Game Feature 01)
- - $(Game Feature 02)
- - $(Game Feature 03)
-
-### Controls
-
-Keyboard:
- - $(Game Control 01)
- - $(Game Control 02)
- - $(Game Control 03)
-
-### Screenshots
-
-_TODO: Show your game to the world, animated GIFs recommended!._
-
-### Developers
-
- - $(Developer 01) - $(Role/Tasks Developed)
- - $(Developer 02) - $(Role/Tasks Developed)
- - $(Developer 03) - $(Role/Tasks Developed)
-
-### Links
-
- - YouTube Gameplay: $(YouTube Link)
- - itch.io Release: $(itch.io Game Page)
- - Steam Release: $(Steam Game Page)
-
-### License
-
-This game sources are licensed under an unmodified zlib/libpng license, which is an OSI-certified, BSD-like license that allows static linking with closed source software. Check [LICENSE](LICENSE) for further details.
-
-$(Additional Licenses)
-
-*Copyright (c) $(Year) $(User Name) ($(User Twitter/GitHub Name))*
+This game source code is licensed under an unmodified zlib/libpng license, which is an OSI-certified, BSD-like license that allows static linking with closed source software. Check [LICENSE](LICENSE) for further details.
