@@ -35,6 +35,11 @@ namespace ecs {
         Entity* entity;
     };
 
-    using AnyEvent = std::variant<EntityCreatedEvent, ComponentAddedEvent, CollisionEvent, CurrencyPickedUpEvent, RequestDestroyEntityEvent>;
+    struct RequestBlockCreateEvent
+    {
+        GridPos pos;
+    };
+
+    using AnyEvent = std::variant<EntityCreatedEvent, ComponentAddedEvent, CollisionEvent, CurrencyPickedUpEvent, RequestDestroyEntityEvent, RequestBlockCreateEvent>;
 
 }

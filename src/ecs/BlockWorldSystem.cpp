@@ -56,6 +56,18 @@ void BlockWorldSystem::PlaceBlockAtPos(Vector2 pos)
     PlaceBlock(pos);
 }
 
+void BlockWorldSystem::ProcessEvent(const AnyEvent& event)
+{
+    // Handle requests to place blocks
+    if (const auto* e = std::get_if<RequestBlockCreateEvent>(&event))
+    {
+        PlaceBlockAtPos(Vector2{
+            e->pos.x * (float)BLOCK_SIZE,
+            e->pos.y * (float)BLOCK_SIZE,
+        });
+    }
+}
+
 void BlockWorldSystem::PlaceBlock(Vector2 position)
 {
     Entity* block = world->CreateEntity();

@@ -21,6 +21,13 @@ namespace ecs {
         Destructible,
     };
 
+    // Represents a column & row position on the block grid.
+    struct GridPos
+    {
+        int x;
+        int y;
+    };
+
     enum class CurrencyType : char
     {
         Coin,
