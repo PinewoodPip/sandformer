@@ -95,7 +95,8 @@ void DrawGameplayScreen(void)
 // Gameplay Screen Unload logic
 void UnloadGameplayScreen(void)
 {
-    // TODO: Unload GAMEPLAY screen variables here!
+    delete world;
+    world = nullptr;
 }
 
 // Gameplay Screen should finish?

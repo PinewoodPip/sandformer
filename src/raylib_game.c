@@ -59,7 +59,7 @@ int main(void)
 {
     // Initialization
     //---------------------------------------------------------
-    InitWindow(screenWidth, screenHeight, "raylib game template");
+    InitWindow(screenWidth, screenHeight, "Sandformer");
 
     InitAudioDevice();      // Initialize audio device
 

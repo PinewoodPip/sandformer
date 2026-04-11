@@ -2,6 +2,19 @@
 
 namespace ecs
 {
+    RenderSystem::~RenderSystem()
+    {
+        // Unload images and textures
+        for (auto& [path, image] : images)
+        {
+            UnloadImage(image);
+        }
+        for (auto& [path, texture] : textures)
+        {
+            UnloadTexture(texture);
+        }
+    }
+
     void RenderSystem::OnStart() {}
 
     void RenderSystem::ProcessEvent(const AnyEvent& event) {}

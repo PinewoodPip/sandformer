@@ -74,6 +74,22 @@ namespace ecs {
         }
     }
 
+    World::~World()
+    {
+        // Cleanup entities
+        // Note: does not use DestroyEntity() as that would inefficiently shift the vector for each entity (and modify this iterator)
+        for (Entity* entity : entities)
+        {
+            delete entity;
+        }
+
+        // Cleanup systems
+        for (System* system : systems)
+        {
+            delete system;
+        }
+    }
+
     void World::ProcessEvents()
     {
         while (!events.empty())
@@ -83,15 +99,7 @@ namespace ecs {
             // Handle entity destruction requests
             if (auto destroyEntityEvent = std::get_if<RequestDestroyEntityEvent>(&event))
             {
-                // Remove from bookkeeping
-                entities.erase(std::remove(entities.begin(), entities.end(), destroyEntityEvent->entity), entities.end());
-
-                // Clear all cached views
-                // dirtyViewComponents does not need to be updated
-                // since this in itself will invalidate all views
-                viewCache.clear();
-
-                delete destroyEntityEvent->entity;
+                DestroyEntity(destroyEntityEvent->entity);
             }
 
             // Forward event
@@ -104,4 +112,16 @@ namespace ecs {
         }
     }
 
+    void World::DestroyEntity(Entity *entity)
+    {
+        // Remove from bookkeeping
+        entities.erase(std::remove(entities.begin(), entities.end(), entity), entities.end());
+
+        // Clear all cached views
+        // dirtyViewComponents does not need to be updated
+        // since this in itself will invalidate all views
+        viewCache.clear();
+
+        delete entity;
+    }
 }

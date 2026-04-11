@@ -109,8 +109,11 @@ namespace ecs {
             return isValid ? std::make_optional(std::make_tuple(entity->GetComponent<Ts>()...)) : std::nullopt;
         }
 
+        ~World();
+
     private:
         void ProcessEvents();
+        void DestroyEntity(Entity* entity);
         
         template <typename... Ts>
         void RebuildView()

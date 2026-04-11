@@ -17,6 +17,8 @@ namespace ecs {
 
         System(World* world) : world(world) {}
 
+        virtual ~System() = default;
+
     protected:
         World* world;
     };
