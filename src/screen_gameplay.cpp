@@ -34,8 +34,6 @@
 
 using namespace ecs;
 
-const int PLAYER_SIZE = 64;
-
 //----------------------------------------------------------------------------------
 // Module Variables Definition (local)
 //----------------------------------------------------------------------------------
@@ -52,25 +50,12 @@ static ecs::World* world = nullptr;
 // Gameplay Screen Initialization logic
 void InitGameplayScreen(void)
 {
-    // TODO: Initialize GAMEPLAY screen variables here!
     framesCounter = 0;
     finishScreen = 0;
 
+    // Create ECS world and systems
     world = new World();
 
-    // Create player
-    Entity* player = world->CreateEntity();
-    world->AddComponent(player, ecs::TransformComponent{});
-    world->AddComponent(player, ecs::BoundingBoxComponent{
-        Vector2{PLAYER_SIZE, PLAYER_SIZE},
-        Vector2{0, 0},
-        });
-	world->AddComponent(player, ecs::PlayerComponent{});
-    world->AddComponent(player, ecs::PhysicsComponent{});
-    world->AddComponent(player, ecs::TextureComponent{ "resources/placeholder.png", {PLAYER_SIZE, PLAYER_SIZE} });
-    world->AddComponent(player, ecs::InventoryComponent{});
-
-    // Create systems
     RenderSystem* renderSystem = new RenderSystem(world);
     world->AddSystem(renderSystem);
 	PlayerSystem* playerSystem = new PlayerSystem(world);

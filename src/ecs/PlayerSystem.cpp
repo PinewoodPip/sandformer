@@ -2,6 +2,20 @@
 
 namespace ecs
 {
+    void PlayerSystem::OnStart()
+    {
+        Entity* player = world->CreateEntity();
+        world->AddComponent(player, TransformComponent{});
+        world->AddComponent(player, BoundingBoxComponent{
+            Vector2{PLAYER_SIZE, PLAYER_SIZE},
+            Vector2{0, 0},
+            });
+        world->AddComponent(player, PlayerComponent{});
+        world->AddComponent(player, PhysicsComponent{});
+        world->AddComponent(player, TextureComponent{ "resources/placeholder.png", {PLAYER_SIZE, PLAYER_SIZE} });
+        world->AddComponent(player, InventoryComponent{});
+    }
+
     void PlayerSystem::Update()
     {
         for (auto [_, player, transform, physics] : world->GetEntities<PlayerComponent, TransformComponent, PhysicsComponent>())
