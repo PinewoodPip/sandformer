@@ -1,3 +1,4 @@
+#pragma once
 #include "World.hpp"
 
 namespace ecs
@@ -5,8 +6,8 @@ namespace ecs
     class WorldGenSystem : public System
     {
     public:
-        static constexpr int BLOCK_SIZE = 64;
-        static constexpr int COIN_SIZE = 32;
+        static constexpr float BLOCK_SIZE = 64.0f;
+        static constexpr float COIN_SIZE = 32.0f;
 
         WorldGenSystem(World* world) : System(world) {}
 
