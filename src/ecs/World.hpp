@@ -10,6 +10,9 @@
 #include <tuple>
 #include <optional>
 #include <algorithm>
+#include <typeindex>
+#include <functional>
+#include <any>
 
 namespace ecs {
 
@@ -75,6 +78,8 @@ namespace ecs {
         std::map<ViewKey, std::vector<Entity*>> viewCache;
         std::set<ViewKey> dirtyViewComponents;
 
+        std::map<std::type_index, std::vector<std::function<void(const std::any&)>>> eventListeners;
+
     public:
         Entity* CreateEntity();
 
@@ -95,7 +100,7 @@ namespace ecs {
 
             if (view == viewCache.end() || needsRebuild)
             {
-                RebuildView<Ts...>();
+                RebuildEntityView<Ts...>();
                 view = viewCache.find(key);
             }
 
@@ -109,6 +114,23 @@ namespace ecs {
             return isValid ? std::make_optional(std::make_tuple(entity->GetComponent<Ts>()...)) : std::nullopt;
         }
 
+        // Subscribes to an event.
+        // TODO an unsubscription mechanism, just in case we ever have system destruction/removal
+        // Could be automatic with a RAII handle pattern
+        template <typename EventType>
+        inline void RegisterListener(std::function<void(const EventType&)> listener)
+        {
+            auto typeIndex = std::type_index(typeid(EventType));
+            if (eventListeners.find(typeIndex) == eventListeners.end())
+            {
+                eventListeners[typeIndex] = {};
+            }
+            eventListeners[typeIndex].push_back([listener](const std::any& event)
+            {
+                listener(std::any_cast<const EventType&>(event));
+            });
+        }
+
         ~World();
 
     private:
@@ -116,7 +138,7 @@ namespace ecs {
         void DestroyEntity(Entity* entity);
         
         template <typename... Ts>
-        void RebuildView()
+        void RebuildEntityView()
         {
             const ViewKey& key = GetViewKey<Ts...>();
             std::vector<Entity*> entitiesWithComponents;
@@ -130,6 +152,21 @@ namespace ecs {
             viewCache[key] = entitiesWithComponents;
 
             dirtyViewComponents.erase(key);
+        }
+
+        // Dispatches a concrete event to its subscribed listeners.
+        template <typename EventType>
+        inline void ProcessEvent(const EventType& event)
+        {
+            auto typeIndex = std::type_index(typeid(EventType));
+            auto listeners = eventListeners.find(typeIndex);
+            if (listeners != eventListeners.end())
+            {
+                for (const auto& listener : listeners->second)
+                {
+                    listener(event);
+                }
+            }
         }
 
         template <typename... Ts>

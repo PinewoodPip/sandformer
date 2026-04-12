@@ -11,8 +11,9 @@ namespace ecs {
 
         using System::System;
 
+        void OnStart() override;
+
         void Update() override;
-        void ProcessEvent(const events::AnyEvent& event) override;
 
     private:
         void BreakBlockAtPos(Vector2 pos);

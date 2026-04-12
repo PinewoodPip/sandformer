@@ -12,8 +12,6 @@ namespace ecs
         RenderSystem(World* world) : System(world) {}
         ~RenderSystem();
 
-        void OnStart() override;
-        void ProcessEvent(const events::AnyEvent& event) override;
         void Render() override;
 
     private:

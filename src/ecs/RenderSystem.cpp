@@ -17,10 +17,6 @@ namespace ecs
         }
     }
 
-    void RenderSystem::OnStart() {}
-
-    void RenderSystem::ProcessEvent(const AnyEvent& event) {}
-
     Image RenderSystem::TryGetImage(const std::string& path)
     {
         auto it = images.find(path);

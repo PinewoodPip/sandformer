@@ -9,7 +9,7 @@ namespace ecs
     public:
         CurrencySystem(World* world) : System(world) {}
 
-        void ProcessEvent(const events::AnyEvent& event) override;
+        void OnStart() override;
         void Render() override;
 
     private:

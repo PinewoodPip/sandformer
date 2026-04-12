@@ -105,10 +105,11 @@ namespace ecs {
             }
 
             // Forward event
-            for (System* system : systems)
+            // Must extract the actual type from the variant
+            std::visit([this](const auto& e)
             {
-                system->ProcessEvent(event);
-            }
+                ProcessEvent(e);
+            }, event);
 
             events.pop();
         }

@@ -5,6 +5,18 @@ using namespace ecs::events;
 
 namespace ecs
 {
+    void BlockWorldSystem::OnStart()
+    {
+        // Handle requests to place blocks
+        world->RegisterListener<RequestCreateBlock>([this](const RequestCreateBlock& request)
+        {
+            TryPlaceBlock(request.blockType, Vector2{
+                request.pos.x * BLOCK_SIZE,
+                request.pos.y * BLOCK_SIZE,
+            });
+        });
+    }
+
     void BlockWorldSystem::Update()
     {
         // Break blocks with left-click
@@ -56,18 +68,6 @@ namespace ecs
         }
         PlaceBlock(blockType, pos);
         return true;
-    }
-
-    void BlockWorldSystem::ProcessEvent(const AnyEvent& event)
-    {
-        // Handle requests to place blocks
-        if (const auto* e = std::get_if<RequestCreateBlock>(&event))
-        {
-            TryPlaceBlock(e->blockType, Vector2{
-                e->pos.x * BLOCK_SIZE,
-                e->pos.y * BLOCK_SIZE,
-            });
-        }
     }
 
     void BlockWorldSystem::PlaceBlock(BlockType blockType, Vector2 position)
