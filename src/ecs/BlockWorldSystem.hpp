@@ -7,7 +7,7 @@ namespace ecs {
     class BlockWorldSystem : public System
     {
     public:
-        static constexpr int BLOCK_SIZE = 64;
+        static constexpr float BLOCK_SIZE = 64.0f;
 
         using System::System;
 

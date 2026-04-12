@@ -38,7 +38,8 @@ namespace ecs {
         switch (type)
         {
             case BlockType::Grass: return { "resources/grass.png" };
-            case BlockType::Dirt:  return { "resources/dirt.png" };
+            case BlockType::Dirt: return { "resources/dirt.png" };
+            default: break;
         }
         throw std::exception("Invalid block type");
     }
