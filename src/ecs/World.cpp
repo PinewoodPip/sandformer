@@ -9,6 +9,10 @@ namespace ecs {
 
     void World::AddSystem(System* system)
     {
+        if (started)
+        {
+            throw std::exception("Cannot add system after ECS world has started");
+        }
         systems.push_back(system);
     }
 
