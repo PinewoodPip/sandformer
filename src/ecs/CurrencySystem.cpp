@@ -11,13 +11,13 @@ namespace ecs
         {
             auto* inventoryEntity = collision.entity;
             auto* currencyEntity = collision.otherEntity;
-            auto inventoryView = world->GetEntityViews<InventoryComponent>(inventoryEntity);
+            auto inventoryView = world->GetEntityView<InventoryComponent>(inventoryEntity);
             if (!inventoryView.has_value())
             {
                 // Swap entities so that the inventory holder is first
                 // Having a collision between 2 currency entities makes one take priority, yep - TODO?
                 std::swap(inventoryEntity, currencyEntity);
-                inventoryView = world->GetEntityViews<InventoryComponent>(inventoryEntity);
+                inventoryView = world->GetEntityView<InventoryComponent>(inventoryEntity);
             }
 
             if (inventoryView.has_value())
@@ -47,11 +47,9 @@ namespace ecs
     void CurrencySystem::Render()
     {
         // Show the player's coins in top-left
-        for (const auto& [entity, player, inventory] : world->GetEntities<PlayerComponent, InventoryComponent>())
-        {
-            auto it = inventory->currencies.find(CurrencyType::Coin);
-            int coins = (it != inventory->currencies.end()) ? it->second : 0; // TODO extract utility getter function
-            DrawText(TextFormat("Coins: %d", coins), 10, 10, 20, WHITE);
-        }
+        auto [_, player, inventory] = world->GetEntity<PlayerComponent, InventoryComponent>().value();
+        auto it = inventory->currencies.find(CurrencyType::Coin);
+        int coins = (it != inventory->currencies.end()) ? it->second : 0; // TODO extract utility getter function
+        DrawText(TextFormat("Coins: %d", coins), 10, 10, 20, WHITE);
     }
 }

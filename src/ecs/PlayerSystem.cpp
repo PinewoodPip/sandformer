@@ -26,111 +26,108 @@ namespace ecs
 
     void PlayerSystem::Update()
     {
-        for (auto [_, player, hotbar, transform, physics] : world->GetEntities<PlayerComponent, HotbarComponent, TransformComponent, PhysicsComponent>())
+        auto [_, player, hotbar, transform, physics] = world->GetEntity<PlayerComponent, HotbarComponent, TransformComponent, PhysicsComponent>().value();
+
+        // Handle hotbar scrolling
+        float scroll = GetMouseWheelMove();
+        if (scroll != 0.0f)
         {
-            // Handle hotbar scrolling
-            float scroll = GetMouseWheelMove();
-            if (scroll != 0.0f)
+            int newIndex = hotbar->selectedIndex - (int)scroll;
+            if (newIndex < 0)
             {
-                int newIndex = hotbar->selectedIndex - (int)scroll;
-                if (newIndex < 0)
-                {
-                    newIndex = (int)hotbar->slots.size() - 1;
-                }
-                else if (newIndex >= (int)hotbar->slots.size())
-                {
-                    newIndex = 0;
-                }
-                hotbar->selectedIndex = newIndex;
+                newIndex = (int)hotbar->slots.size() - 1;
             }
+            else if (newIndex >= (int)hotbar->slots.size())
+            {
+                newIndex = 0;
+            }
+            hotbar->selectedIndex = newIndex;
+        }
 
-            // Handle horizontal movement
-            float targetXSpeed = 0.0f; // TODO also support arrow keys
-            if (IsKeyDown(KEY_A))
-            {
-                targetXSpeed = -MAX_SPEED;
-            }
-            else if (IsKeyDown(KEY_D))
-            {
-                targetXSpeed = MAX_SPEED;
-            }
+        // Handle horizontal movement
+        float targetXSpeed = 0.0f; // TODO also support arrow keys
+        if (IsKeyDown(KEY_A))
+        {
+            targetXSpeed = -MAX_SPEED;
+        }
+        else if (IsKeyDown(KEY_D))
+        {
+            targetXSpeed = MAX_SPEED;
+        }
 
-            if (targetXSpeed != 0.0f)
+        if (targetXSpeed != 0.0f)
+        {
+            transform->velocity.x += ACCELERATION * (targetXSpeed > 0.0f ? 1.0f : -1.0f);
+            if (transform->velocity.x > MAX_SPEED)
             {
-                transform->velocity.x += ACCELERATION * (targetXSpeed > 0.0f ? 1.0f : -1.0f);
-                if (transform->velocity.x > MAX_SPEED)
-                {
-                    transform->velocity.x = MAX_SPEED;
-                }
-                else if (transform->velocity.x < -MAX_SPEED)
-                {
-                    transform->velocity.x = -MAX_SPEED;
-                }
+                transform->velocity.x = MAX_SPEED;
+            }
+            else if (transform->velocity.x < -MAX_SPEED)
+            {
+                transform->velocity.x = -MAX_SPEED;
+            }
+        }
+        else
+        {
+            if (transform->velocity.x > ACCELERATION_DECAY)
+            {
+                transform->velocity.x -= ACCELERATION_DECAY;
+            }
+            else if (transform->velocity.x < -ACCELERATION_DECAY)
+            {
+                transform->velocity.x += ACCELERATION_DECAY;
             }
             else
             {
-                if (transform->velocity.x > ACCELERATION_DECAY)
-                {
-                    transform->velocity.x -= ACCELERATION_DECAY;
-                }
-                else if (transform->velocity.x < -ACCELERATION_DECAY)
-                {
-                    transform->velocity.x += ACCELERATION_DECAY;
-                }
-                else
-                {
-                    transform->velocity.x = 0.0f;
-                }
+                transform->velocity.x = 0.0f;
             }
+        }
 
-            // Handle jump physics
-            // Initial press gives burst of velocity, holding it lets the player jump higher
-            // Roughly the NES Mario jump
-            if (IsKeyPressed(KEY_W) && physics->isGrounded)
-            {
-                transform->velocity.y = -JUMP_VELOCITY;
-            }
-            else if (IsKeyDown(KEY_W) && (transform->velocity.y < 0.0f))
-            {
-                transform->velocity.y -= JUMP_VELOCITY_HOLD_BOOST;
-            }
+        // Handle jump physics
+        // Initial press gives burst of velocity, holding it lets the player jump higher
+        // Roughly the NES Mario jump
+        if (IsKeyPressed(KEY_W) && physics->isGrounded)
+        {
+            transform->velocity.y = -JUMP_VELOCITY;
+        }
+        else if (IsKeyDown(KEY_W) && (transform->velocity.y < 0.0f))
+        {
+            transform->velocity.y -= JUMP_VELOCITY_HOLD_BOOST;
         }
     }
 
     void PlayerSystem::Render()
     {
         // Render hotbar
-        for (auto [_, player, hotbar] : world->GetEntities<PlayerComponent, HotbarComponent>())
+        auto [_, player, hotbar] = world->GetEntity<PlayerComponent, HotbarComponent>().value();
+
+        int HOTBAR_SLOTS = HotbarComponent::SLOTS;
+
+        // Get position for centering
+        int totalWidth = (HOTBAR_SLOTS * HOTBAR_SLOT_SIZE) + ((HOTBAR_SLOTS - 1) * HOTBAR_SLOT_PADDING);
+        int startX = (GetScreenWidth() - totalWidth) / 2;
+        int startY = GetScreenHeight() - HOTBAR_SLOT_SIZE - HOTBAR_BOTTOM_MARGIN;
+
+        // Draw slots
+        for (int i = 0; i < HOTBAR_SLOTS; i++)
         {
-            int HOTBAR_SLOTS = HotbarComponent::SLOTS;
-
-            // Get position for centering
-            int totalWidth = (HOTBAR_SLOTS * HOTBAR_SLOT_SIZE) + ((HOTBAR_SLOTS - 1) * HOTBAR_SLOT_PADDING);
-            int startX = (GetScreenWidth() - totalWidth) / 2;
-            int startY = GetScreenHeight() - HOTBAR_SLOT_SIZE - HOTBAR_BOTTOM_MARGIN;
-
-            // Draw slots
-            for (int i = 0; i < HOTBAR_SLOTS; i++)
+            int x = startX + i * (HOTBAR_SLOT_SIZE + HOTBAR_SLOT_PADDING);
+            Color borderColor = (i == hotbar->selectedIndex) ? YELLOW : GRAY;
+            DrawRectangle(x, startY, HOTBAR_SLOT_SIZE, HOTBAR_SLOT_SIZE, Color{ 40, 40, 40, 200 });
+            DrawRectangleLines(x, startY - 1, HOTBAR_SLOT_SIZE, HOTBAR_SLOT_SIZE, borderColor);
+            if (hotbar->slots[i] != BlockType::None)
             {
-                int x = startX + i * (HOTBAR_SLOT_SIZE + HOTBAR_SLOT_PADDING);
-                Color borderColor = (i == hotbar->selectedIndex) ? YELLOW : GRAY;
-                DrawRectangle(x, startY, HOTBAR_SLOT_SIZE, HOTBAR_SLOT_SIZE, Color{ 40, 40, 40, 200 });
-                DrawRectangleLines(x, startY - 1, HOTBAR_SLOT_SIZE, HOTBAR_SLOT_SIZE, borderColor);
-                if (hotbar->slots[i] != BlockType::None)
-                {
-                    BlockDescriptor desc = GetBlockDescriptor(hotbar->slots[i]);
-                    Texture2D texture = GetHotbarTexture(desc.texturePath);
-                    DrawTexturePro(
-                        texture,
-                        Rectangle{ 0.0f, 0.0f, (float)texture.width, (float)texture.height },
-                        Rectangle{ (float)x, (float)startY, (float)HOTBAR_SLOT_SIZE, (float)HOTBAR_SLOT_SIZE },
-                        Vector2{ 0.0f, 0.0f },
-                        0.0f,
-                        WHITE
-                    );
-                }
+                BlockDescriptor desc = GetBlockDescriptor(hotbar->slots[i]);
+                Texture2D texture = GetHotbarTexture(desc.texturePath);
+                DrawTexturePro(
+                    texture,
+                    Rectangle{ 0.0f, 0.0f, (float)texture.width, (float)texture.height },
+                    Rectangle{ (float)x, (float)startY, (float)HOTBAR_SLOT_SIZE, (float)HOTBAR_SLOT_SIZE },
+                    Vector2{ 0.0f, 0.0f },
+                    0.0f,
+                    WHITE
+                );
             }
-            break; // Only 1 such entity exists - TODO make a getter that only returns first match
         }
     }
 

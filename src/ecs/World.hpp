@@ -86,11 +86,18 @@ namespace ecs {
         void Start();
         void Update();
         void Render();
+
+        // Adds a component to an entity.
         void AddComponent(Entity* entity, AnyComponent component);
 
+        // Registers a system.
+        // Should be called before Start().
         void AddSystem(System* system);
+
+        // Queues an event to be dispatched to systems on the next tick.
         void EmitEvent(events::AnyEvent event);
     
+        // Returns all entities with the given components.
         template <typename... Ts>
         inline EntityView<Ts...> GetEntities()
         {
@@ -107,6 +114,21 @@ namespace ecs {
             return EntityView<Ts...>{ view->second };
         }
 
+        // Returns the first entity with the given components, if any.
+        template <typename... Ts>
+        inline std::optional<std::tuple<Entity*, Ts*...>> GetEntity()
+        {
+            auto view = GetEntities<Ts...>();
+            auto it = view.begin();
+            if (it == view.end())
+            {
+                return std::nullopt;
+            }
+            return *it;
+        }
+
+        // Returns a view into the entity's given components.
+        // Will be valueless if the entity does not have *all* of the requested components.
         template <typename... Ts>
         inline std::optional<std::tuple<Ts*...>> GetEntityView(Entity* entity)
         {

@@ -359,14 +359,21 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\..\..\src\screens.h" />
+    <ClInclude Include="..\..\..\src\ecs\Entity.hpp" />
+    <ClInclude Include="..\..\..\src\screens.hpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="..\..\..\src\ecs\Entity.cpp" />
+    <ClCompile Include="..\..\..\src\ecs\World.cpp" />
+    <ClCompile Include="..\..\..\src\ecs\PlayerSystem.cpp" />
+    <ClCompile Include="..\..\..\src\ecs\PhysicsSystem.cpp" />
+    <ClCompile Include="..\..\..\src\ecs\CurrencySystem.cpp" />
+    <ClCompile Include="..\..\..\src\ecs\RenderSystem.cpp" />
     <ClCompile Include="..\..\..\src\raylib_game.c" />
     <ClCompile Include="..\..\..\src\screen_logo.c" />
     <ClCompile Include="..\..\..\src\screen_title.c" />
     <ClCompile Include="..\..\..\src\screen_options.c" />
-    <ClCompile Include="..\..\..\src\screen_gameplay.c" />
+    <ClCompile Include="..\..\..\src\screen_gameplay.cpp" />
     <ClCompile Include="..\..\..\src\screen_ending.c" />
   </ItemGroup>
   <ItemGroup>

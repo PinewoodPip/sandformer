@@ -28,20 +28,16 @@ namespace ecs
         // Place blocks with right-click using the selected hotbar slot
         if (IsMouseButtonPressed(MOUSE_BUTTON_RIGHT))
         {
-            for (auto [_, player, hotbar] : world->GetEntities<PlayerComponent, HotbarComponent>())
+            auto [_, player, hotbar] = world->GetEntity<PlayerComponent, HotbarComponent>().value();
+            BlockType selected = hotbar->slots[hotbar->selectedIndex];
+            if (selected != BlockType::None)
             {
-                BlockType selected = hotbar->slots[hotbar->selectedIndex];
-                if (selected == BlockType::None)
-                {
-                    break;
-                }
                 Vector2 mousePos = GetMousePosition();
                 Vector2 mouseGridPos = {
                     (float)((int)(mousePos.x / BLOCK_SIZE) * BLOCK_SIZE),
                     (float)((int)(mousePos.y / BLOCK_SIZE) * BLOCK_SIZE),
                 };
                 TryPlaceBlock(selected, mouseGridPos);
-                break; // There is only one player
             }
         }
     }
