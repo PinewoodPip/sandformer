@@ -28,7 +28,9 @@ namespace ecs
             for (auto [otherEntity, otherBox, otherTransform] : world->GetEntities<BoundingBoxComponent, TransformComponent>())
             {
                 if (otherBox == boundingBox)
+                {
                     continue;
+                }
 
                 // Get world-space AABBs
                 float aLeft = transform->position.x + boundingBox->offset.x;
@@ -42,8 +44,10 @@ namespace ecs
                 float bBottom = bTop + otherBox->size.y;
 
                 // Skip if there's no overlap
-                if (aLeft >= bRight || aRight <= bLeft || aTop >= bBottom || aBottom <= bTop)
+                if (((a.left >= b.right) || (a.right <= b.left) || (a.top >= b.bottom) || (a.bottom <= b.top)))
+                {
                     continue;
+                }
 
                 // Throw collision event
                 world->EmitEvent(Collision{ entity, otherEntity });

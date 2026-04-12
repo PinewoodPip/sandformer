@@ -19,7 +19,7 @@ namespace ecs {
 
     Entity* World::CreateEntity()
     {
-        Entity* entity = new Entity(_NextEntityID++);
+        Entity* entity = new Entity(nextEntityId++);
         entities.push_back(entity);
 
         EmitEvent(EntityCreated{ entity });
@@ -114,7 +114,7 @@ namespace ecs {
         }
     }
 
-    void World::DestroyEntity(Entity *entity)
+    void World::DestroyEntity(Entity* entity)
     {
         // Remove from bookkeeping
         entities.erase(std::remove(entities.begin(), entities.end(), entity), entities.end());

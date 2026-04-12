@@ -88,7 +88,7 @@ namespace ecs {
     {
         static constexpr ComponentType Type = ComponentType::Gravity;
 
-        bool isGrounded;
+        bool isGrounded = false;
     };
 
     struct CurrencyComponent

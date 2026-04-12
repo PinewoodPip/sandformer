@@ -17,40 +17,40 @@ namespace ecs {
 
     class Entity;
 
-	template <typename... Ts>
-	class EntityView
-	{
-		std::vector<Entity*>& entities;
-        
-	public:
+    template <typename... Ts>
+    class EntityView
+    {
+        std::vector<Entity*>& entities;
+
+    public:
 
         EntityView(std::vector<Entity*>& entities) : entities(entities) {}
 
-		struct Iterator
-		{
-			std::vector<Entity*>::iterator it;
+        struct Iterator
+        {
+            std::vector<Entity*>::iterator it;
 
-			std::tuple<Entity*, Ts*...> operator*()
-			{
-				return std::tuple_cat(std::make_tuple(*it), std::make_tuple((*it)->GetComponent<Ts>()...));
-			}
+            std::tuple<Entity*, Ts*...> operator*()
+            {
+                return std::tuple_cat(std::make_tuple(*it), std::make_tuple((*it)->GetComponent<Ts>()...));
+            }
 
-			Iterator& operator++()
-			{
-				++it;
-				return *this;
-			}
+            Iterator& operator++()
+            {
+                ++it;
+                return *this;
+            }
 
-			bool operator!=(const Iterator& other) const
-			{
-				return it != other.it;
-			}
+            bool operator!=(const Iterator& other) const
+            {
+                return it != other.it;
+            }
 
-			bool operator==(const Iterator& other) const
-			{
-				return it == other.it;
-			}
-		};
+            bool operator==(const Iterator& other) const
+            {
+                return it == other.it;
+            }
+        };
 
         Iterator begin()
         {
@@ -61,14 +61,14 @@ namespace ecs {
         {
             return Iterator{ entities.end() };
         }
-	};
+    };
 
     class World
     {
     private:
         std::vector<Entity*> entities;
         std::queue<events::AnyEvent> events;
-        int _NextEntityID = 0;
+        int nextEntityId = 0;
         bool started = false;
 
         std::vector<System*> systems;
