@@ -11,13 +11,13 @@ namespace ecs
         {
             auto* inventoryEntity = collision.entity;
             auto* currencyEntity = collision.otherEntity;
-            auto inventoryView = world->GetEntityView<InventoryComponent>(inventoryEntity);
+            auto inventoryView = world->GetEntityViews<InventoryComponent>(inventoryEntity);
             if (!inventoryView.has_value())
             {
                 // Swap entities so that the inventory holder is first
                 // Having a collision between 2 currency entities makes one take priority, yep - TODO?
                 std::swap(inventoryEntity, currencyEntity);
-                inventoryView = world->GetEntityView<InventoryComponent>(inventoryEntity);
+                inventoryView = world->GetEntityViews<InventoryComponent>(inventoryEntity);
             }
 
             if (inventoryView.has_value())

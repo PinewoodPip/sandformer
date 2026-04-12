@@ -1,6 +1,8 @@
 #pragma once
 #include "raylib.h"
 #include "Entity.hpp"
+#include <map>
+#include <string>
 
 namespace ecs
 {
@@ -15,8 +17,15 @@ namespace ecs
 
     public:
         PlayerSystem(World* world) : System(world) {}
+        ~PlayerSystem();
 
         void OnStart() override;
         void Update() override;
+        void Render() override;
+
+    private:
+        std::map<std::string, Texture2D> hotbarTextures;
+
+        Texture2D GetHotbarTexture(const std::string& path);
     };
 }

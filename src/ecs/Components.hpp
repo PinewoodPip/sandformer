@@ -1,6 +1,7 @@
 #pragma once
 
 #include "raylib.h"
+#include <array>
 #include <map>
 #include <string>
 #include <variant>
@@ -19,10 +20,12 @@ namespace ecs {
         Inventory,
         Solid,
         Block,
+        Hotbar,
     };
 
     enum class BlockType
     {
+        None,
         Grass,
         Dirt,
     };
@@ -119,6 +122,15 @@ namespace ecs {
         BlockType blockType = BlockType::Grass;
     };
 
+    struct HotbarComponent
+    {
+        static constexpr ComponentType Type = ComponentType::Hotbar;
+        static constexpr int SLOTS = 6;
+
+        std::array<BlockType, SLOTS> slots; // Slots will be initialized to None since that's the first ID
+        int selectedIndex = 0;
+    };
+
     using AnyComponent = std::variant<
         TransformComponent,
         BoundingBoxComponent,
@@ -128,6 +140,7 @@ namespace ecs {
         CurrencyComponent,
         InventoryComponent,
         SolidComponent,
-        BlockComponent
+        BlockComponent,
+        HotbarComponent
     >;
 }

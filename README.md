@@ -14,16 +14,17 @@ A C++ 2D block platformer game built as a custom ECS case study, using [raylib](
 - Custom entity component system, using:
     - Pure-data struct-based components, no inheritance nor virtual calls, only variants for discriminators (see `Components.hpp`)
     - Multiple *systems* with separation of concerns, operating on entities with the relevant components
-    - Event bus pattern for communicating systems (within `World.cpp`)
+    - Event bus pattern for communicating systems (within `World.cpp`) using per-event lambda subscriptions
     - Cached "views" into entities with specific component combinations for faster (and readable) query/iteration within systems, using variadic templates (`EntityView` class)
 
 `World` is the class that manages the ECS state, owning the entities, systems, and event queue. Its `Update()` method (called from the raylib boilerplate main loop) drives the game logic and rendering by calling each system's `Update()` and `Render()` methods, and processing events emitted by systems.
 
 Currently the following systems exist:
 
+- **PlayerSystem**: handles movement/jump controls on the player entity
+- **BlockWorldSystem**: handles block placement/breaking mechanics, using a `BlockComponent`
 - **WorldGenSystem**: creates the ground blocks and coins
 - **PhysicsSystem**: applies gravity to entities with `PhysicsComponent` and handles collisions
-- **PlayerSystem**: handles movement/jump controls on the player entity
 - **RenderSystem**: draws entities with `TextureComponent` and caches loaded textures
 - **CurrencySystem**: handles the coin pickup mechanics, using a `CurrencyComponent` and `InventoryComponent` (on player entity)
 
@@ -31,9 +32,11 @@ The main game loop code is based on the raylib game template: https://github.com
 
 ## Controls
 
-Keyboard:
- - A/D: move left/right
- - W: jump; hold to jump higher
+ - **A/D**: move left/right
+ - **W**: jump; hold to jump higher
+ - **Left-click**: break block at cursor
+ - **Right-click**: place selected block
+ - **Scroll wheel**: cycle blocks in hotbar
 
 ## Building
 
