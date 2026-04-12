@@ -37,6 +37,27 @@ namespace ecs
         }
     }
 
+    void BlockWorldSystem::Render()
+    {
+        // Draw outline around the selected grid position
+        Vector2 mousePos = GetMousePosition();
+        Vector2 gridPos = {
+            (float)((int)(mousePos.x / BLOCK_SIZE) * BLOCK_SIZE),
+            (float)((int)(mousePos.y / BLOCK_SIZE) * BLOCK_SIZE),
+        };
+        DrawRectangleLinesEx(
+            Rectangle{ gridPos.x, gridPos.y, BLOCK_SIZE, BLOCK_SIZE },
+            2.0f,
+            GREEN
+        );
+
+        // Draw controls hint
+        static const char* hint = "Left-click: Break block      Right-click: Place block";
+        int fontSize = 20;
+        int textWidth = MeasureText(hint, fontSize);
+        DrawText(hint, (GetScreenWidth() - textWidth) / 2, GetScreenHeight() - 30, fontSize, WHITE);
+    }
+
     void BlockWorldSystem::BreakBlockAtPos(Vector2 pos)
     {
         for (auto [entity, transform, bbox, block] : world->GetEntities<TransformComponent, BoundingBoxComponent, BlockComponent>())

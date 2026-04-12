@@ -14,6 +14,7 @@ namespace ecs {
         void OnStart() override;
 
         void Update() override;
+        void Render() override;
 
     private:
         void BreakBlockAtPos(Vector2 pos);
