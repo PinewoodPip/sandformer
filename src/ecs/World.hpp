@@ -95,7 +95,7 @@ namespace ecs {
         void AddSystem(System* system);
 
         // Queues an event to be dispatched to systems on the next tick.
-        void EmitEvent(events::AnyEvent event);
+        void PushEvent(events::AnyEvent event);
     
         // Returns all entities with the given components.
         template <typename... Ts>

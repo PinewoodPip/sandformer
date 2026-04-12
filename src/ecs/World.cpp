@@ -16,7 +16,7 @@ namespace ecs {
         systems.push_back(system);
     }
 
-    void World::EmitEvent(AnyEvent event)
+    void World::PushEvent(AnyEvent event)
     {
         events.push(event);
     }
@@ -26,7 +26,7 @@ namespace ecs {
         Entity* entity = new Entity(nextEntityId++);
         entities.push_back(entity);
 
-        EmitEvent(EntityCreated{ entity });
+        PushEvent(EntityCreated{ entity });
 
         return entity;
     }
@@ -45,7 +45,7 @@ namespace ecs {
             }
         }
 
-        EmitEvent(ComponentAdded{ entity });
+        PushEvent(ComponentAdded{ entity });
     }
 
     void World::Start()

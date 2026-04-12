@@ -9,18 +9,18 @@ namespace ecs
         // Create ground
         for (int i = 0; i < 13; i++)
         {
-            world->EmitEvent(RequestCreateBlock{ GridPos{ i, 4 } });
-            world->EmitEvent(RequestCreateBlock{ GridPos{ i, 5 }, BlockType::Dirt });
-            world->EmitEvent(RequestCreateBlock{ GridPos{ i, 6 }, BlockType::Dirt });
+            world->PushEvent(RequestCreateBlock{ GridPos{ i, 4 } });
+            world->PushEvent(RequestCreateBlock{ GridPos{ i, 5 }, BlockType::Dirt });
+            world->PushEvent(RequestCreateBlock{ GridPos{ i, 6 }, BlockType::Dirt });
         }
 
         // Create hill on the right
         for (int i = 8; i < 11; i++)
         {
-            world->EmitEvent(RequestCreateBlock{ GridPos{ i, 3 } });
-            world->EmitEvent(RequestCreateBlock{ GridPos{ i, 4 }, BlockType::Dirt });
-            world->EmitEvent(RequestCreateBlock{ GridPos{ i, 5 }, BlockType::Dirt });
-            world->EmitEvent(RequestCreateBlock{ GridPos{ i, 6 }, BlockType::Dirt });
+            world->PushEvent(RequestCreateBlock{ GridPos{ i, 3 } });
+            world->PushEvent(RequestCreateBlock{ GridPos{ i, 4 }, BlockType::Dirt });
+            world->PushEvent(RequestCreateBlock{ GridPos{ i, 5 }, BlockType::Dirt });
+            world->PushEvent(RequestCreateBlock{ GridPos{ i, 6 }, BlockType::Dirt });
         }
 
         // Create coins

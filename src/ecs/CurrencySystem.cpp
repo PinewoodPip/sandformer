@@ -40,8 +40,8 @@ namespace ecs
     void CurrencySystem::PickUpCurrency(InventoryComponent* inventory, Entity* currencyEntity, CurrencyComponent* currency)
     {
         AddCurrency(inventory, currency->currencyType, currency->amount);
-        world->EmitEvent(CurrencyPickedUp{ currencyEntity, currency->currencyType, currency->amount });
-        world->EmitEvent(RequestDestroyEntity{ currencyEntity });
+        world->PushEvent(CurrencyPickedUp{ currencyEntity, currency->currencyType, currency->amount });
+        world->PushEvent(RequestDestroyEntity{ currencyEntity });
     }
 
     void CurrencySystem::Render()
