@@ -7,11 +7,11 @@ namespace ecs
     RenderSystem::~RenderSystem()
     {
         // Unload images and textures
-        for (auto& [path, image] : images)
+        for (auto& [_, image] : images)
         {
             UnloadImage(image);
         }
-        for (auto& [path, texture] : textures)
+        for (auto& [_, texture] : textures)
         {
             UnloadTexture(texture);
         }
@@ -21,7 +21,7 @@ namespace ecs
 
     void RenderSystem::ProcessEvent(const AnyEvent& event) {}
 
-    Image RenderSystem::TryGetImage(std::string path)
+    Image RenderSystem::TryGetImage(const std::string& path)
     {
         auto it = images.find(path);
         if (it != images.end())
@@ -38,7 +38,7 @@ namespace ecs
         }
     }
 
-    Texture2D RenderSystem::TryGetTexture2D(std::string path) // TODO cleanup
+    Texture2D RenderSystem::TryGetTexture2D(const std::string& path) // TODO cleanup
     {
         auto it = textures.find(path);
         if (it != textures.end())

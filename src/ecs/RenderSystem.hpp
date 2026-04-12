@@ -20,7 +20,7 @@ namespace ecs
         std::map<std::string, Image> images;
         std::map<std::string, Texture2D> textures;
 
-        Image TryGetImage(std::string path);
-        Texture2D TryGetTexture2D(std::string path);
+        Image TryGetImage(const std::string& path);
+        Texture2D TryGetTexture2D(const std::string& path);
     };
 }
