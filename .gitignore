@@ -78,3 +78,4 @@ android.*
 *.js
 !src/minshell.html
 !src/shell.html
+/projects/VS2022/raylib_game/resources

@@ -46,62 +46,46 @@
     <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
     <PlatformToolset>$(DefaultPlatformToolset)</PlatformToolset>
-    <CharacterSet>Unicode</CharacterSet>
-    <LocalDebuggerWorkingDirectory>$(SolutionDir)..\..\src</LocalDebuggerWorkingDirectory>
-  </PropertyGroup>
+    <CharacterSet>Unicode</CharacterSet>  </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
     <PlatformToolset>$(DefaultPlatformToolset)</PlatformToolset>
-    <CharacterSet>Unicode</CharacterSet>
-    <LocalDebuggerWorkingDirectory>$(SolutionDir)..\..\src</LocalDebuggerWorkingDirectory>
-  </PropertyGroup>
+    <CharacterSet>Unicode</CharacterSet>  </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug.DLL|Win32'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
     <PlatformToolset>$(DefaultPlatformToolset)</PlatformToolset>
-    <CharacterSet>Unicode</CharacterSet>
-    <LocalDebuggerWorkingDirectory>$(SolutionDir)..\..\src</LocalDebuggerWorkingDirectory>
-  </PropertyGroup>
+    <CharacterSet>Unicode</CharacterSet>  </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug.DLL|x64'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
     <PlatformToolset>$(DefaultPlatformToolset)</PlatformToolset>
-    <CharacterSet>Unicode</CharacterSet>
-    <LocalDebuggerWorkingDirectory>$(SolutionDir)..\..\src</LocalDebuggerWorkingDirectory>
-  </PropertyGroup>
+    <CharacterSet>Unicode</CharacterSet>  </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>false</UseDebugLibraries>
     <PlatformToolset>$(DefaultPlatformToolset)</PlatformToolset>
     <WholeProgramOptimization>true</WholeProgramOptimization>
-    <CharacterSet>Unicode</CharacterSet>
-    <LocalDebuggerWorkingDirectory>$(SolutionDir)..\..\src</LocalDebuggerWorkingDirectory>
-  </PropertyGroup>
+    <CharacterSet>Unicode</CharacterSet>  </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>false</UseDebugLibraries>
     <PlatformToolset>$(DefaultPlatformToolset)</PlatformToolset>
     <WholeProgramOptimization>true</WholeProgramOptimization>
-    <CharacterSet>Unicode</CharacterSet>
-    <LocalDebuggerWorkingDirectory>$(SolutionDir)..\..\src</LocalDebuggerWorkingDirectory>
-  </PropertyGroup>
+    <CharacterSet>Unicode</CharacterSet>  </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release.DLL|Win32'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>false</UseDebugLibraries>
     <PlatformToolset>$(DefaultPlatformToolset)</PlatformToolset>
     <WholeProgramOptimization>true</WholeProgramOptimization>
-    <CharacterSet>Unicode</CharacterSet>
-    <LocalDebuggerWorkingDirectory>$(SolutionDir)..\..\src</LocalDebuggerWorkingDirectory>
-  </PropertyGroup>
+    <CharacterSet>Unicode</CharacterSet>  </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release.DLL|x64'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>false</UseDebugLibraries>
     <PlatformToolset>$(DefaultPlatformToolset)</PlatformToolset>
     <WholeProgramOptimization>true</WholeProgramOptimization>
-    <CharacterSet>Unicode</CharacterSet>
-    <LocalDebuggerWorkingDirectory>$(SolutionDir)..\..\src</LocalDebuggerWorkingDirectory>
-  </PropertyGroup>
+    <CharacterSet>Unicode</CharacterSet>  </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
   <ImportGroup Label="ExtensionSettings">
   </ImportGroup>
@@ -181,6 +165,8 @@
       <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;WIN32;_DEBUG;_CONSOLE;PLATFORM_DESKTOP;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <CompileAs>Default</CompileAs>
       <AdditionalIncludeDirectories>$(SolutionDir)..\..\src;$(SolutionDir)..\..\src\external;$(SolutionDir)..\..\..\raylib\src;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <ForcedIncludeFiles>$(ProjectDir)..\..\..\src\ecs\Entity.hpp</ForcedIncludeFiles>
+      <LanguageStandard>stdcpp17</LanguageStandard>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -188,6 +174,10 @@
       <AdditionalLibraryDirectories>$(SolutionDir)\build\raylib\bin\$(Platform)\$(Configuration)\</AdditionalLibraryDirectories>
       <AdditionalDependencies>raylib.lib;opengl32.lib;kernel32.lib;user32.lib;gdi32.lib;winmm.lib;winspool.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;odbc32.lib;odbccp32.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
+    <PostBuildEvent>
+      <Command>xcopy /y /s /e /i "$(ProjectDir)..\..\..\src\resources" "$(ProjectDir)resources"</Command>
+      <Message>Copy resources to output directory</Message>
+    </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <ClCompile>
@@ -198,6 +188,8 @@
       <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;WIN32;_DEBUG;_CONSOLE;PLATFORM_DESKTOP;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <CompileAs>Default</CompileAs>
       <AdditionalIncludeDirectories>$(SolutionDir)..\..\src;$(SolutionDir)..\..\src\external;$(SolutionDir)..\..\..\raylib\src;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <ForcedIncludeFiles>$(ProjectDir)..\..\..\src\ecs\Entity.hpp</ForcedIncludeFiles>
+      <LanguageStandard>stdcpp17</LanguageStandard>
       <AdditionalOptions>/FS %(AdditionalOptions)</AdditionalOptions>
     </ClCompile>
     <Link>
@@ -206,6 +198,10 @@
       <AdditionalLibraryDirectories>$(SolutionDir)\build\raylib\bin\$(Platform)\$(Configuration)\</AdditionalLibraryDirectories>
       <AdditionalDependencies>raylib.lib;opengl32.lib;kernel32.lib;user32.lib;gdi32.lib;winmm.lib;winspool.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;odbc32.lib;odbccp32.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
+    <PostBuildEvent>
+      <Command>xcopy /y /s /e /i "$(ProjectDir)..\..\..\src\resources" "$(ProjectDir)resources"</Command>
+      <Message>Copy resources to output directory</Message>
+    </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug.DLL|Win32'">
     <ClCompile>
@@ -216,6 +212,8 @@
       <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;WIN32;_DEBUG;_CONSOLE;PLATFORM_DESKTOP;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <CompileAs>Default</CompileAs>
       <AdditionalIncludeDirectories>$(SolutionDir)..\..\src;$(SolutionDir)..\..\src\external;$(SolutionDir)..\..\..\raylib\src;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <ForcedIncludeFiles>$(ProjectDir)..\..\..\src\ecs\Entity.hpp</ForcedIncludeFiles>
+      <LanguageStandard>stdcpp17</LanguageStandard>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -224,8 +222,9 @@
       <AdditionalDependencies>raylib.lib;opengl32.lib;kernel32.lib;user32.lib;gdi32.lib;winmm.lib;winspool.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;odbc32.lib;odbccp32.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <PostBuildEvent>
-      <Command>xcopy /y /d  "$(SolutionDir)\build\raylib\bin\$(Platform)\$(Configuration)\raylib.dll" "$(SolutionDir)\build\$(ProjectName)\bin\$(Platform)\$(Configuration)"</Command>
-      <Message>Copy Debug DLL to output directory</Message>
+      <Command>xcopy /y /d  "$(SolutionDir)\build\raylib\bin\$(Platform)\$(Configuration)\raylib.dll" "$(SolutionDir)\build\$(ProjectName)\bin\$(Platform)\$(Configuration)"
+xcopy /y /s /e /i "$(ProjectDir)..\..\..\src\resources" "$(ProjectDir)resources"</Command>
+      <Message>Copy Debug DLL and resources to output directory</Message>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug.DLL|x64'">
@@ -237,6 +236,8 @@
       <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;WIN32;_DEBUG;_CONSOLE;PLATFORM_DESKTOP;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <CompileAs>Default</CompileAs>
       <AdditionalIncludeDirectories>$(SolutionDir)..\..\src;$(SolutionDir)..\..\src\external;$(SolutionDir)..\..\..\raylib\src;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <ForcedIncludeFiles>$(ProjectDir)..\..\..\src\ecs\Entity.hpp</ForcedIncludeFiles>
+      <LanguageStandard>stdcpp17</LanguageStandard>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -245,8 +246,9 @@
       <AdditionalDependencies>raylib.lib;opengl32.lib;kernel32.lib;user32.lib;gdi32.lib;winmm.lib;winspool.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;odbc32.lib;odbccp32.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <PostBuildEvent>
-      <Command>xcopy /y /d  "$(SolutionDir)\build\raylib\bin\$(Platform)\$(Configuration)\raylib.dll" "$(SolutionDir)\build\$(ProjectName)\bin\$(Platform)\$(Configuration)"</Command>
-      <Message>Copy Debug DLL to output directory</Message>
+      <Command>xcopy /y /d  "$(SolutionDir)\build\raylib\bin\$(Platform)\$(Configuration)\raylib.dll" "$(SolutionDir)\build\$(ProjectName)\bin\$(Platform)\$(Configuration)"
+xcopy /y /s /e /i "$(ProjectDir)..\..\..\src\resources" "$(ProjectDir)resources"</Command>
+      <Message>Copy Debug DLL and resources to output directory</Message>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -259,6 +261,8 @@
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;WIN32;NDEBUG;_CONSOLE;PLATFORM_DESKTOP;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <AdditionalIncludeDirectories>$(SolutionDir)..\..\src;$(SolutionDir)..\..\src\external;$(SolutionDir)..\..\..\raylib\src;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <ForcedIncludeFiles>$(ProjectDir)..\..\..\src\ecs\Entity.hpp</ForcedIncludeFiles>
+      <LanguageStandard>stdcpp17</LanguageStandard>
       <CompileAs>Default</CompileAs>
       <RemoveUnreferencedCodeData>true</RemoveUnreferencedCodeData>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
@@ -272,6 +276,10 @@
       <AdditionalDependencies>raylib.lib;opengl32.lib;kernel32.lib;user32.lib;gdi32.lib;winmm.lib;winspool.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;odbc32.lib;odbccp32.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <AdditionalLibraryDirectories>$(SolutionDir)\build\raylib\bin\$(Platform)\$(Configuration)\</AdditionalLibraryDirectories>
     </Link>
+    <PostBuildEvent>
+      <Command>xcopy /y /s /e /i "$(ProjectDir)..\..\..\src\resources" "$(ProjectDir)resources"</Command>
+      <Message>Copy resources to output directory</Message>
+    </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <ClCompile>
@@ -283,6 +291,8 @@
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;WIN32;NDEBUG;_CONSOLE;PLATFORM_DESKTOP;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <AdditionalIncludeDirectories>$(SolutionDir)..\..\src;$(SolutionDir)..\..\src\external;$(SolutionDir)..\..\..\raylib\src;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <ForcedIncludeFiles>$(ProjectDir)..\..\..\src\ecs\Entity.hpp</ForcedIncludeFiles>
+      <LanguageStandard>stdcpp17</LanguageStandard>
       <CompileAs>Default</CompileAs>
       <RemoveUnreferencedCodeData>true</RemoveUnreferencedCodeData>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
@@ -296,6 +306,10 @@
       <AdditionalDependencies>raylib.lib;opengl32.lib;kernel32.lib;user32.lib;gdi32.lib;winmm.lib;winspool.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;odbc32.lib;odbccp32.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <AdditionalLibraryDirectories>$(SolutionDir)\build\raylib\bin\$(Platform)\$(Configuration)\</AdditionalLibraryDirectories>
     </Link>
+    <PostBuildEvent>
+      <Command>xcopy /y /s /e /i "$(ProjectDir)..\..\..\src\resources" "$(ProjectDir)resources"</Command>
+      <Message>Copy resources to output directory</Message>
+    </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release.DLL|Win32'">
     <ClCompile>
@@ -307,6 +321,8 @@
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;WIN32;NDEBUG;_CONSOLE;PLATFORM_DESKTOP;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <AdditionalIncludeDirectories>$(SolutionDir)..\..\src;$(SolutionDir)..\..\src\external;$(SolutionDir)..\..\..\raylib\src;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <ForcedIncludeFiles>$(ProjectDir)..\..\..\src\ecs\Entity.hpp</ForcedIncludeFiles>
+      <LanguageStandard>stdcpp17</LanguageStandard>
       <CompileAs>Default</CompileAs>
       <RemoveUnreferencedCodeData>true</RemoveUnreferencedCodeData>
     </ClCompile>
@@ -319,10 +335,9 @@
       <AdditionalLibraryDirectories>$(SolutionDir)\build\raylib\bin\$(Platform)\$(Configuration)\</AdditionalLibraryDirectories>
     </Link>
     <PostBuildEvent>
-      <Command>xcopy /y /d  "$(SolutionDir)\build\raylib\bin\$(Platform)\$(Configuration)\raylib.dll" "$(SolutionDir)\build\$(ProjectName)\bin\$(Platform)\$(Configuration)"</Command>
-    </PostBuildEvent>
-    <PostBuildEvent>
-      <Message>Copy Release DLL to output directory</Message>
+      <Command>xcopy /y /d  "$(SolutionDir)\build\raylib\bin\$(Platform)\$(Configuration)\raylib.dll" "$(SolutionDir)\build\$(ProjectName)\bin\$(Platform)\$(Configuration)"
+xcopy /y /s /e /i "$(ProjectDir)..\..\..\src\resources" "$(ProjectDir)resources"</Command>
+      <Message>Copy Release DLL and resources to output directory</Message>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release.DLL|x64'">
@@ -335,6 +350,8 @@
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;WIN32;NDEBUG;_CONSOLE;PLATFORM_DESKTOP;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <AdditionalIncludeDirectories>$(SolutionDir)..\..\src;$(SolutionDir)..\..\src\external;$(SolutionDir)..\..\..\raylib\src;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <ForcedIncludeFiles>$(ProjectDir)..\..\..\src\ecs\Entity.hpp</ForcedIncludeFiles>
+      <LanguageStandard>stdcpp17</LanguageStandard>
       <CompileAs>Default</CompileAs>
       <RemoveUnreferencedCodeData>true</RemoveUnreferencedCodeData>
     </ClCompile>
@@ -347,10 +364,9 @@
       <AdditionalLibraryDirectories>$(SolutionDir)\build\raylib\bin\$(Platform)\$(Configuration)\</AdditionalLibraryDirectories>
     </Link>
     <PostBuildEvent>
-      <Command>xcopy /y /d  "$(SolutionDir)\build\raylib\bin\$(Platform)\$(Configuration)\raylib.dll" "$(SolutionDir)\build\$(ProjectName)\bin\$(Platform)\$(Configuration)"</Command>
-    </PostBuildEvent>
-    <PostBuildEvent>
-      <Message>Copy Release DLL to output directory</Message>
+      <Command>xcopy /y /d  "$(SolutionDir)\build\raylib\bin\$(Platform)\$(Configuration)\raylib.dll" "$(SolutionDir)\build\$(ProjectName)\bin\$(Platform)\$(Configuration)"
+xcopy /y /s /e /i "$(ProjectDir)..\..\..\src\resources" "$(ProjectDir)resources"</Command>
+      <Message>Copy Release DLL and resources to output directory</Message>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
@@ -359,22 +375,38 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="..\..\..\src\ecs\BlockWorldSystem.hpp" />
+    <ClInclude Include="..\..\..\src\ecs\Components.hpp" />
+    <ClInclude Include="..\..\..\src\ecs\CurrencySystem.hpp" />
     <ClInclude Include="..\..\..\src\ecs\Entity.hpp" />
+    <ClInclude Include="..\..\..\src\ecs\Events.hpp" />
+    <ClInclude Include="..\..\..\src\ecs\PhysicsSystem.hpp" />
+    <ClInclude Include="..\..\..\src\ecs\PlayerSystem.hpp" />
+    <ClInclude Include="..\..\..\src\ecs\RenderSystem.hpp" />
+    <ClInclude Include="..\..\..\src\ecs\System.hpp" />
+    <ClInclude Include="..\..\..\src\ecs\World.hpp" />
+    <ClInclude Include="..\..\..\src\ecs\WorldGenSystem.hpp" />
     <ClInclude Include="..\..\..\src\screens.hpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="..\..\..\src\ecs\BlockWorldSystem.cpp" />
     <ClCompile Include="..\..\..\src\ecs\Entity.cpp" />
     <ClCompile Include="..\..\..\src\ecs\World.cpp" />
     <ClCompile Include="..\..\..\src\ecs\PlayerSystem.cpp" />
     <ClCompile Include="..\..\..\src\ecs\PhysicsSystem.cpp" />
     <ClCompile Include="..\..\..\src\ecs\CurrencySystem.cpp" />
     <ClCompile Include="..\..\..\src\ecs\RenderSystem.cpp" />
-    <ClCompile Include="..\..\..\src\raylib_game.c" />
-    <ClCompile Include="..\..\..\src\screen_logo.c" />
-    <ClCompile Include="..\..\..\src\screen_title.c" />
-    <ClCompile Include="..\..\..\src\screen_options.c" />
+    <ClCompile Include="..\..\..\src\ecs\WorldGenSystem.cpp" />
+    <ClCompile Include="..\..\..\src\raylib_game.c">
+      <ForcedIncludeFiles></ForcedIncludeFiles>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\screen_logo.c">
+      <ForcedIncludeFiles></ForcedIncludeFiles>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\screen_title.c">
+      <ForcedIncludeFiles></ForcedIncludeFiles>
+    </ClCompile>
     <ClCompile Include="..\..\..\src\screen_gameplay.cpp" />
-    <ClCompile Include="..\..\..\src\screen_ending.c" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="..\..\..\src\raylib_game.rc" />
