@@ -2,7 +2,7 @@
 
 #include "raylib.h"
 #include <array>
-#include <map>
+#include <unordered_map>
 #include <string>
 #include <variant>
 
@@ -107,7 +107,7 @@ namespace ecs {
     {
         static constexpr ComponentType Type = ComponentType::Inventory;
 
-        std::map<CurrencyType, int> currencies;
+        std::unordered_map<CurrencyType, int> currencies;
     };
 
     struct SolidComponent

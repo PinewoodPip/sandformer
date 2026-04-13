@@ -3,7 +3,7 @@
 #include "Components.hpp"
 #include "Events.hpp"
 #include "World.hpp"
-#include <map>
+#include <unordered_map>
 
 namespace ecs {
 
@@ -26,7 +26,7 @@ namespace ecs {
         }
 
 	private:
-        std::map<ComponentType, AnyComponent> components;
+        std::unordered_map<ComponentType, AnyComponent> components;
 
 		friend class World;
     };

@@ -5,8 +5,9 @@
 #include "System.hpp"
 #include <vector>
 #include <queue>
-#include <set>
 #include <map>
+#include <set>
+#include <unordered_map>
 #include <tuple>
 #include <optional>
 #include <algorithm>
@@ -16,10 +17,11 @@
 
 namespace ecs {
 
-    using ViewKey = std::vector<ComponentType>;
+    using ViewKey = std::vector<ComponentType>; // Note: could've been a bitfield, but we expect >64 components eventually
 
     class Entity;
 
+    // A view into a cache of all entities that have all the given components.
     template <typename... Ts>
     class EntityView
     {
@@ -74,24 +76,34 @@ namespace ecs {
         int nextEntityId = 0;
         bool started = false;
 
-        std::vector<System*> systems;
+        std::vector<System*> systems; // In order of ticking.
         std::map<ViewKey, std::vector<Entity*>> viewCache;
         std::set<ViewKey> dirtyViewComponents;
 
-        std::map<std::type_index, std::vector<std::function<void(const std::any&)>>> eventListeners;
+        std::unordered_map<std::type_index, std::vector<std::function<void(const std::any&)>>> eventListeners;
 
     public:
-        Entity* CreateEntity();
-
+        // Calls OnStart() on registered systems.
+        // Should only be called once after all systems were registered.
         void Start();
+
+        // Processes queued events and calls Update() on systems.
         void Update();
+
+        // Calls Render() on registered systems.
+        // raylib BeginDrawing() and EndDrawing() should be called before and after.
         void Render();
+
+        // Creates a new entity with no components.
+        Entity* CreateEntity();
 
         // Adds a component to an entity.
         void AddComponent(Entity* entity, AnyComponent component);
 
         // Registers a system.
+        // The newly-registered system will be ticked after all other previously-registered ones.
         // Should be called before Start().
+        // The world will take ownership of the system.
         void AddSystem(System* system);
 
         // Queues an event to be dispatched to systems on the next tick.
@@ -156,7 +168,10 @@ namespace ecs {
         ~World();
 
     private:
+        // Forwards all queued events to the subscribed systems.
         void ProcessEvents();
+
+        // Removes an entity and all its components.
         void DestroyEntity(Entity* entity);
         
         template <typename... Ts>
@@ -191,6 +206,7 @@ namespace ecs {
             }
         }
 
+        // Returns the ViewKey for a set of component types.
         template <typename... Ts>
         const ViewKey& GetViewKey()
         {

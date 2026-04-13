@@ -1,7 +1,7 @@
 #pragma once
 #include "raylib.h"
 #include "Entity.hpp"
-#include <map>
+#include <unordered_map>
 #include <string>
 
 namespace ecs
@@ -15,8 +15,8 @@ namespace ecs
         void Render() override;
 
     private:
-        std::map<std::string, Image> images;
-        std::map<std::string, Texture2D> textures;
+        std::unordered_map<std::string, Image> images;
+        std::unordered_map<std::string, Texture2D> textures;
 
         Image TryGetImage(const std::string& path);
         Texture2D TryGetTexture2D(const std::string& path);
