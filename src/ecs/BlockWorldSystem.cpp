@@ -75,7 +75,7 @@ namespace ecs
             };
             if (CheckCollisionPointRec(pos, blockRect))
             {
-                world->PushEvent(RequestDestroyEntity{ entity });
+                world->PushEvent(RequestDestroyEntity{ &entity });
                 break; // There can only be 1 block under the cursor
             }
         }

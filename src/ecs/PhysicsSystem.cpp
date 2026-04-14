@@ -57,10 +57,10 @@ namespace ecs
                 }
 
                 // Throw collision event
-                world->PushEvent(Collision{ entity, otherEntity });
+                world->PushEvent(Collision{ &entity, &otherEntity });
 
                 // Push away if the other entity is solid
-                if (otherEntity->GetComponent<SolidComponent>())
+                if (otherEntity.GetComponent<SolidComponent>())
                 {
                     // Use the pre-move position to determine which side to push to
                     // This also prevents overshooting collisions.

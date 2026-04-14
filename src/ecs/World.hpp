@@ -35,9 +35,9 @@ namespace ecs {
         {
             std::vector<Entity*>::iterator it;
 
-            std::tuple<Entity*, Ts*...> operator*()
+            std::tuple<Entity&, Ts*...> operator*()
             {
-                return std::tuple_cat(std::make_tuple(*it), std::make_tuple((*it)->GetComponent<Ts>()...));
+                return std::tuple<Entity&, Ts*...>{ **it, (*it)->GetComponent<Ts>()... };
             }
 
             Iterator& operator++()
@@ -128,7 +128,7 @@ namespace ecs {
 
         // Returns the first entity with the given components, if any.
         template <typename... Ts>
-        inline std::optional<std::tuple<Entity*, Ts*...>> GetEntity()
+        inline std::optional<std::tuple<Entity&, Ts*...>> GetEntity()
         {
             auto view = GetEntities<Ts...>();
             auto it = view.begin();
