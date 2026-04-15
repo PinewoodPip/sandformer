@@ -22,11 +22,18 @@ namespace ecs
         hotbar.slots[0] = BlockType::Grass;
         hotbar.slots[1] = BlockType::Dirt;
         world->AddComponent(player, hotbar);
+        playerEntity = player;
+    }
+
+    void PlayerSystem::OnShutdown()
+    {
+        world->PushEvent(events::RequestDestroyEntity{ playerEntity });
+        playerEntity = nullptr;
     }
 
     void PlayerSystem::Update()
     {
-        auto [_, player, hotbar, transform, physics] = world->GetEntity<PlayerComponent, HotbarComponent, TransformComponent, PhysicsComponent>().value();
+        auto [hotbar, transform, physics] = world->GetEntityView<HotbarComponent, TransformComponent, PhysicsComponent>(playerEntity).value();
 
         // Handle hotbar scrolling
         float scroll = GetMouseWheelMove();
@@ -101,7 +108,7 @@ namespace ecs
     void PlayerSystem::Render()
     {
         // Render hotbar
-        auto [_, player, hotbar] = world->GetEntity<PlayerComponent, HotbarComponent>().value();
+        auto [hotbar] = world->GetEntityView<HotbarComponent>(playerEntity).value();
 
         int HOTBAR_SLOTS = HotbarComponent::SLOTS;
 

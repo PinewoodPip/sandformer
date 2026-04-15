@@ -111,6 +111,13 @@ namespace ecs {
 
     World::~World()
     {
+        // Run cleanup routines
+        for (System* system : systems)
+        {
+            system->OnShutdown();
+        }
+        ProcessEvents(); // Not 100% necessary, but it does give a chance for systems to cleanly destroy any entities they own from OnShutdown()... might need to give this more thought in the future.
+
         // Cleanup entities
         // Note: does not use DestroyEntity() as that would inefficiently shift the vector for each entity (and modify this iterator)
         for (Entity* entity : entities)

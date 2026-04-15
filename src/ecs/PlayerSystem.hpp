@@ -20,10 +20,12 @@ namespace ecs
         ~PlayerSystem();
 
         void OnStart() override;
+        void OnShutdown() override;
         void Update() override;
         void Render() override;
 
     private:
+        Entity* playerEntity = nullptr;
         std::map<std::string, Texture2D> hotbarTextures;
 
         Texture2D GetHotbarTexture(const std::string& path);

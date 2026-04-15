@@ -11,6 +11,7 @@ namespace ecs {
     {
     public:
         virtual void OnStart() {}; // Called when the ECS world starts, use for setup routines
+        virtual void OnShutdown() {}; // Called when the world is being destroyed, before entity/system cleanup
         virtual void Update() {}; // Called every tick
         virtual void Render() {}; // Intended to draw graphics using raylib
 
