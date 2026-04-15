@@ -6,8 +6,8 @@
 #include <vector>
 #include <queue>
 #include <map>
-#include <set>
 #include <unordered_map>
+#include <unordered_set>
 #include <tuple>
 #include <optional>
 #include <algorithm>
@@ -25,15 +25,15 @@ namespace ecs {
     template <typename... Ts>
     class EntityView
     {
-        std::vector<Entity*>& entities;
+        std::unordered_set<Entity*>& entities;
 
     public:
 
-        EntityView(std::vector<Entity*>& entities) : entities(entities) {}
+        EntityView(std::unordered_set<Entity*>& entities) : entities(entities) {}
 
         struct Iterator
         {
-            std::vector<Entity*>::iterator it;
+            std::unordered_set<Entity*>::iterator it;
 
             std::tuple<Entity&, Ts*...> operator*()
             {
@@ -77,8 +77,7 @@ namespace ecs {
         bool started = false;
 
         std::vector<System*> systems; // In order of ticking.
-        std::map<ViewKey, std::vector<Entity*>> viewCache;
-        std::set<ViewKey> dirtyViewComponents;
+        std::map<ViewKey, std::unordered_set<Entity*>> viewCache;
 
         std::unordered_map<std::type_index, std::vector<std::function<void(const std::any&)>>> eventListeners;
 
@@ -113,11 +112,12 @@ namespace ecs {
         template <typename... Ts>
         inline EntityView<Ts...> GetEntities()
         {
+            static_assert(sizeof...(Ts) > 0, "GetEntities(): must query at least one component type"); // Empty query would just be equivalent to iterating all entities; no point in "caching" that
+
             const ViewKey& key = GetViewKey<Ts...>();
             auto view = viewCache.find(key);
-            bool needsRebuild = dirtyViewComponents.find(key) != dirtyViewComponents.end();
 
-            if (view == viewCache.end() || needsRebuild)
+            if (view == viewCache.end())
             {
                 RebuildEntityView<Ts...>();
                 view = viewCache.find(key);
@@ -178,18 +178,22 @@ namespace ecs {
         void RebuildEntityView()
         {
             const ViewKey& key = GetViewKey<Ts...>();
-            std::vector<Entity*> entitiesWithComponents;
+            std::unordered_set<Entity*> entitiesWithComponents;
             for (Entity* entity : entities)
             {
                 if ((entity->GetComponent<Ts>() && ...))
                 {
-                    entitiesWithComponents.push_back(entity);
+                    entitiesWithComponents.insert(entity);
                 }
             }
-            viewCache[key] = entitiesWithComponents;
-
-            dirtyViewComponents.erase(key);
+            viewCache[key] = std::move(entitiesWithComponents);
         }
+
+        // Adds an entity to every cached view that it would belong to after adding the given component.
+        void AddEntityToViews(Entity* entity, ComponentType addedCompType);
+
+        // Removes an entity from all cached views.
+        void RemoveEntityFromViews(Entity* entity);
 
         // Dispatches a concrete event to its subscribed listeners.
         template <typename EventType>

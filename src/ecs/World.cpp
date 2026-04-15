@@ -28,6 +28,8 @@ namespace ecs {
 
         PushEvent(EntityCreated{ entity });
 
+        // Note: the new entity does not need to be added to any view until it receives a component
+        // since 0-component queries are not allowed
         return entity;
     }
 
@@ -36,16 +38,43 @@ namespace ecs {
         ComponentType type = std::visit([](const auto& c) -> ComponentType { return c.Type; }, component);
         entity->components.insert({ type, std::move(component) });
 
-        // Mark views using this component type as dirty
-        for (const auto& [viewKey, viewEntities] : viewCache)
-        {
-            if (std::find(viewKey.begin(), viewKey.end(), type) != viewKey.end())
-            {
-                dirtyViewComponents.insert(viewKey);
-            }
-        }
+        AddEntityToViews(entity, type);
 
         PushEvent(ComponentAdded{ entity });
+    }
+
+    void World::AddEntityToViews(Entity* entity, ComponentType addedType)
+    {
+        for (auto& [viewKey, viewEntities] : viewCache)
+        {
+            if (std::find(viewKey.begin(), viewKey.end(), addedType) == viewKey.end())
+            {
+                continue;
+            }
+
+            // Add the entity to the view if it now has all its components
+            bool hasAllComponents = true;
+            for (ComponentType ct : viewKey)
+            {
+                if (entity->components.find(ct) == entity->components.end())
+                {
+                    hasAllComponents = false;
+                    break;
+                }
+            }
+            if (hasAllComponents)
+            {
+                viewEntities.insert(entity);
+            }
+        }
+    }
+
+    void World::RemoveEntityFromViews(Entity* entity)
+    {
+        for (auto& [viewKey, viewEntities] : viewCache)
+        {
+            viewEntities.erase(entity);
+        }
     }
 
     void World::Start()
@@ -124,10 +153,7 @@ namespace ecs {
         // Remove from bookkeeping
         entities.erase(std::remove(entities.begin(), entities.end(), entity), entities.end());
 
-        // Clear all cached views
-        // dirtyViewComponents does not need to be updated
-        // since this in itself will invalidate all views
-        viewCache.clear();
+        RemoveEntityFromViews(entity);
 
         delete entity;
     }
