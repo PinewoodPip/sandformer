@@ -86,11 +86,13 @@ namespace ecs
         // Handle jump physics
         // Initial press gives burst of velocity, holding it lets the player jump higher
         // Roughly the NES Mario jump
-        if (IsKeyPressed(KEY_W) && physics->isGrounded)
+        bool isJumpPressed = IsKeyPressed(KEY_W) || IsKeyPressed(KEY_SPACE);
+        bool isJumpHeld = IsKeyDown(KEY_W) || IsKeyDown(KEY_SPACE);
+        if (isJumpPressed && physics->isGrounded)
         {
             transform->velocity.y = -JUMP_VELOCITY;
         }
-        else if (IsKeyDown(KEY_W) && (transform->velocity.y < 0.0f))
+        else if (isJumpHeld && (transform->velocity.y < 0.0f))
         {
             transform->velocity.y -= JUMP_VELOCITY_HOLD_BOOST;
         }

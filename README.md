@@ -3,6 +3,8 @@ A C++ 2D block platformer game built as a custom ECS case study, using [raylib](
 
 ![Gameplay screenshot](docs/gameplay_screenshot.png)
 
+*(You play as a fishing rod, yes)*
+
 **The current exciting end-user features:**
 
 - Moving around and jumping
@@ -33,7 +35,7 @@ The main game loop code is based on the raylib game template: https://github.com
 ## Controls
 
  - **A/D**: move left/right
- - **W**: jump; hold to jump higher
+ - **W/Space**: jump; hold to jump higher
  - **Left-click**: break block at cursor
  - **Right-click**: place selected block
  - **Scroll wheel**: cycle blocks in hotbar
